@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import com.google.gson.JsonArray;
@@ -6,19 +7,27 @@ import com.google.gson.JsonObject;
 public class Console {
 	
 	App app = new App();
-	Model model = new Model(app);
+	
 
 	public void menuDraw(){
 	
 		System.out.println("\n====================================\n");
 		System.out.println("1 - All Characters");
 		System.out.println("2 - Search Character");
-		System.out.println("3 - About");
-		System.out.println("4 - Exit");
+		System.out.println("3 - Searche History");
+		System.out.println("4 - About");
+		System.out.println("5 - Exit");
 		System.out.println("\n====================================\n");
 		Scanner input = new Scanner(System.in);
-    	int number = input.nextInt();
-    	menuChoice(number);
+    	try {
+    		int number = input.nextInt();
+    		menuChoice(number);
+    	}
+	 catch (InputMismatchException e) {
+		 System.err.println("This is not the number you are looking for....\nEnter a number from the menu.\n");
+		 menuDraw();
+	 }
+    	
 		
 	}
 	
@@ -31,8 +40,14 @@ public class Console {
 		System.out.println("3 - Exit");
 		System.out.println("\n====================================\n");
 		Scanner input = new Scanner(System.in);
+		try {
     	int number = input.nextInt();
     	guiChooser(number);
+		}
+		catch (InputMismatchException e) {
+		System.err.println("This is not the number you are looking for....\nEnter a number from the menu.\n");
+		printGuiChoice();
+		}
 		
 	}
 	
@@ -41,18 +56,17 @@ public class Console {
 	      
         switch (command) {
             case 1:
-              System.out.println("You chose Text");
               menuDraw();
                 break;
             case 2:
-               System.out.println("You chose GUI");
                 break;
             case 3:
                exitApp();
                  break;
            
             default:
-                System.out.println(command + " is not a available command");
+               System.err.println(command + " is not the dro.. number your looking for.\nTry again.");
+               printGuiChoice();
                 break;
         }
     }
@@ -70,21 +84,36 @@ public class Console {
                System.out.println("Enter a Character to search for");
                Scanner input = new Scanner(System.in);
            	   String text = input.nextLine();
-           	   System.out.println("Text is : "+text);
+           	
            	   try {
 				app.swapiCharacterSearch(text);
-				app.person.personPrint();
+				menuDraw();
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
                 break;
-            case 4:
+            case 3:
+            	System.out.println("\nList of all searched Characters : ["+app.People.size()+"]\n");
+            	if(app.People.size() == 0) {
+            		System.err.println("You currently haven't searched for anyone.");
+            	}
+            	else {
+            	 app.People.forEach(person -> {
+                     person.personPrint();
+                     System.out.println("\n");
+                 });
+            	}
+               menuDraw();
+                  break;
+            case 5:
                 exitApp();
                  break;
            
             default:
-                System.out.println(command + " is not a available command");
+            	   System.err.println(command + " is not the dro.. number your looking for.\nTry again.");
+            	   menuDraw();
                 break;
         }
     }

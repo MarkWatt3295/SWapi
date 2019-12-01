@@ -1,39 +1,54 @@
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
 public class Person {
 	
+	String allfilms = "";
+	public List<Films> Films = new ArrayList<>();
+	
+	public void addFilm(Films e) {
+		Films.add(e);
+		System.out.println("Added : "+e.getTitle());
+	}
+	
 	public void personPrint() {
+		
+		 Films.forEach(films -> {
+	          allfilms = allfilms + " | "+ films.getTitle();
+	        });
 		System.out.println("Character information : \nName : "+getName()+"\nGender : "+getGender()+"\n"
-				+ "Species : "+getSpecies());
+				+ "Species : "+getSpecies()+"\nFilms : "+ allfilms);
+		
+		allfilms = ""; //Clear stored string
 	}
 
 	  private String name;
 
-	    @SerializedName("birth_year")
+	  
 	    private String birthYear;
 
-	    @SerializedName("films")
+	  
 	    private List<String> filmsUrls;
 
 	    private String gender;
 
-	    @SerializedName("hair_color")
+	  
 	    private String hairColor;
 
 	    private String height;
 
-	    @SerializedName("homeworld")
+	  
 	    private String homeWorldUrl;
 
 	    private String mass;
 
-	    @SerializedName("skin_color")
+	 
 	    private String skinColor;
 
-	   ;
-	    @SerializedName("species")
+
+	  
 	    private String species;
 
 	    public String getSpecies() {
@@ -44,10 +59,10 @@ public class Person {
 			this.species = species;
 		}
 
-		@SerializedName("starships")
+		
 	    private List<String> starshipsUrls;
 
-	    @SerializedName("vehicles")
+	  
 	    private List<String> vehiclesUrls;
 
 		public String getName() {
