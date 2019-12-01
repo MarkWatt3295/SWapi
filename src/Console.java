@@ -14,7 +14,7 @@ public class Console {
 		System.out.println("\n====================================\n");
 		System.out.println("1 - All Characters");
 		System.out.println("2 - Search Character");
-		System.out.println("3 - Searche History");
+		System.out.println("3 - Search History");
 		System.out.println("4 - About");
 		System.out.println("5 - Exit");
 		System.out.println("\n====================================\n");
