@@ -42,8 +42,11 @@ public class App {
 
 
 	public void swapiCharacterSearch(String searchquery)  {
+		System.out.println("Search Query before : "+searchquery);
+		searchquery = searchquery.replaceAll("\\s+","+");
+		System.out.println("Search Query After : "+searchquery);
 		HttpGet httpGet = new HttpGet("https://swapi.co/api/people/?search=" + searchquery);
-		//System.out.println("The get is : "+httpGet); 
+		System.out.println("The get is : "+httpGet); 
 		try {
 			personRequest(httpGet);
 		} catch (TimeLimitExceededException e) {
@@ -79,7 +82,7 @@ public class App {
 					+ response.getStatusLine().getStatusCode());
 		}
 
-		if(App.networkConnected = true) {
+		
 			reader = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
 		
 
@@ -89,7 +92,7 @@ public class App {
 			stringBuilder.append(line);
 			// System.out.println("http : "+line);
 		}
-		}
+		
 	}
 
 
@@ -163,7 +166,11 @@ public class App {
 			Films f = new Films();
 			p.setName(name);
 			p.setGender(gender);
-
+			 if(App.networkConnected == false){  
+		            System.err.println("ERRRRRRRROOOOOORRRR"); 
+		            Main.networkError();
+		            break;
+			 }
 			// System.out.println("Name is : "+name);
 			//   System.out.println("Gender is : "+gender);
 			JsonArray species = result.getAsJsonArray("species");
@@ -262,10 +269,15 @@ public class App {
 
 
 	public void printSubCall(String entity, JsonArray jsonArray)  {
-		//System.out.println("SubPrint call: "+entity+" "+jsonArray);
-		if(App.networkConnected == true) {
+		System.out.println("SubPrint call: "+entity+" "+jsonArray);
+		
 		if (jsonArray.size() != 0) {
 			for (int j = 0; j < jsonArray.size(); j++) {
+				 if(App.networkConnected == false){  
+			            System.err.println("ERRRRRRRROOOOOORRRR"); 
+			            Main.networkError();
+			            break;
+				 }
 				JsonElement character = jsonArray.get(j);
 				String uri = character.getAsString();
 				//System.out.println("print uri is : "+uri);
@@ -296,10 +308,8 @@ public class App {
 		} else {
 			System.out.println("nothing here");
 		}
-		}
-		else {
-			Main.networkError();
-		}
+		
+		
 	}
 
 

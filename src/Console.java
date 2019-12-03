@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -11,6 +12,10 @@ public class Console {
 
 
 	public void menuDraw(){
+		if(displayheader == false) {
+			clrscr();
+		}
+
 		if(App.networkConnected == true) {
 			if(displayheader == true) {
 				asciiDraw2();
@@ -29,17 +34,17 @@ public class Console {
 			System.out.println("");
 			System.out.println("10 - Exit");
 			System.out.println("11 - Redraw Menu");
-			
+
 			System.out.println("AppOnline : "+App.networkConnected);
 			System.out.println("\n==================================================================================\n");
-			
-			
+
+
 			if(App.networkConnected == true) {
 				try {
 					int number = input.nextInt();
-					
+
 					if(App.networkConnected == true) {
-					menuChoice(number);
+						menuChoice(number);
 					}
 					else if (App.networkConnected == false){
 						Main.networkError();
@@ -69,7 +74,7 @@ public class Console {
 		System.out.println("2 - Swing GUI");
 		System.out.println("3 - Exit");
 		System.out.println("\n==================================================================================\n");
-		
+
 		try {
 			int number = input.nextInt();
 			guiChooser(number);
@@ -96,8 +101,8 @@ public class Console {
 
 		default:
 			System.err.println(command + " is not the dro.. number your looking for.\nTry again.");
-					printGuiChoice();
-					break;
+			printGuiChoice();
+			break;
 		}
 	}
 
@@ -108,27 +113,16 @@ public class Console {
 		switch (command) {
 		case 1:
 			System.out.println("All Characters");
-			menuDraw();
+			
 			break;
 		case 2:
 
-			if(App.networkConnected == true) {
-
-				try {
 					System.out.println("Enter a Character to search for");
 					Scanner input = new Scanner(System.in);
 					String text = input.nextLine();
 					app.swapiCharacterSearch(text);
-					menuDraw();
-				} catch (Exception e) {
-					Main.networkError();
-				}
-
-			}
-			else {
-				Main.networkError();
-			}
-
+					endResult();
+				
 
 			break;
 		case 3:
@@ -153,9 +147,17 @@ public class Console {
 
 		default:
 			System.err.println(command + " is not the dro.. number your looking for.\nTry again.");
+			endResult();
 			menuDraw();
 			break;
 		}
+	}
+
+	private void endResult() {
+		System.out.println("Press \"ENTER\" to continue...");
+		Scanner scanner = new Scanner(System.in);
+		scanner.nextLine();
+		menuDraw();
 	}
 
 	private void exitApp() {
@@ -181,6 +183,18 @@ public class Console {
 			break;
 		}
 	}
+
+
+	public static void clrscr(){
+		//Clears Screen in java
+		try {
+			if (System.getProperty("os.name").contains("Windows"))
+				new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+			else
+				Runtime.getRuntime().exec("clear");
+		} catch (IOException | InterruptedException ex) {}
+	}
+
 
 	private void asciiDraw() {
 		System.out.println(" ____ _____  _    ____   __        __                  _    ____ ___ \r\n" + 

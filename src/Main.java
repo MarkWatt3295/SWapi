@@ -14,7 +14,7 @@ public class Main {
 
 	private static void StartUpCheck() {
 		try {
-			URL url = new URL("http://www.google.com");
+			URL url = new URL("https://swapi.co/");
 			URLConnection connection = url.openConnection();
 			connection.connect();
 			System.out.println("\n=====================================================================================================");
