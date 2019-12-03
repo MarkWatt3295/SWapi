@@ -1,8 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.NoRouteToHostException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.naming.TimeLimitExceededException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -18,8 +21,9 @@ import com.google.gson.JsonParser;
 
 public class App {
 
+	public static boolean networkConnected = false;
 	private String temptype = "";
-	private String tempfilm = "";
+
 	List<Person> People = new ArrayList<>();
 	List<Films> Films = new ArrayList<>();
 
@@ -35,12 +39,28 @@ public class App {
 	 * @throws Exception
 	 */
 
-	public void swapiCharacterSearch(String searchquery) throws Exception {
+
+
+	public void swapiCharacterSearch(String searchquery)  {
 		HttpGet httpGet = new HttpGet("https://swapi.co/api/people/?search=" + searchquery);
 		//System.out.println("The get is : "+httpGet); 
-		personRequest(httpGet);
+		try {
+			personRequest(httpGet);
+		} catch (TimeLimitExceededException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (NoRouteToHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
+
 
 	public void StraightSwapiSearch(String uri, String type) throws Exception {
 		HttpGet httpGet = new HttpGet(uri);
@@ -59,14 +79,16 @@ public class App {
 					+ response.getStatusLine().getStatusCode());
 		}
 
-		reader = new BufferedReader(
-				new InputStreamReader((response.getEntity().getContent())));
+		if(App.networkConnected = true) {
+			reader = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+		
 
 		String line;
 
 		while ((line = reader.readLine()) != null) {
 			stringBuilder.append(line);
 			// System.out.println("http : "+line);
+		}
 		}
 	}
 
@@ -133,7 +155,7 @@ public class App {
 			System.err.println("There are multiple results for this search.\n");
 		}
 		for (int i = 0; i < arr.size(); i++) {
-			System.out.println("arr = "+arr);
+			//System.out.println("arr = "+arr);
 			JsonObject result = arr.get(i).getAsJsonObject();
 			name = arr.get(i).getAsJsonObject().get("name").getAsString();
 			gender = arr.get(i).getAsJsonObject().get("gender").getAsString();
@@ -146,14 +168,14 @@ public class App {
 			//   System.out.println("Gender is : "+gender);
 			JsonArray species = result.getAsJsonArray("species");
 			JsonArray films = result.getAsJsonArray("films");
-			System.out.println("Films size : "+films.size());
+			//System.out.println("Films size : "+films.size());
 			//System.out.println("species is : "+species);
 			printSubCall("name", species);
 			p.setSpecies(temptype);
 			printSubCall("title", films);
 
 			Films.forEach(film -> {
-				System.out.println(film.getTitle());
+				//System.out.println(film.getTitle());
 				p.addFilm(film);
 
 			});
@@ -239,25 +261,44 @@ public class App {
 
 
 
-	public void printSubCall(String entity, JsonArray jsonArray) throws Exception {
+	public void printSubCall(String entity, JsonArray jsonArray)  {
 		//System.out.println("SubPrint call: "+entity+" "+jsonArray);
+		if(App.networkConnected == true) {
 		if (jsonArray.size() != 0) {
 			for (int j = 0; j < jsonArray.size(); j++) {
 				JsonElement character = jsonArray.get(j);
 				String uri = character.getAsString();
-				System.out.println("print uri is : "+uri);
+				//System.out.println("print uri is : "+uri);
 
 				if(uri.contains("species")){
-					StraightSwapiSearch(uri, "species");
+
+
+					try {
+						StraightSwapiSearch(uri, "species");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
+
 				else if(uri.contains("films")){
 
-					System.out.println("contains films");
-					StraightSwapiSearch(uri, "films");
+					//System.out.println("contains films");
+					try {
+						StraightSwapiSearch(uri, "films");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		} else {
 			System.out.println("nothing here");
+		}
+		}
+		else {
+			Main.networkError();
 		}
 	}
 

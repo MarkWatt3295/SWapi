@@ -10,7 +10,7 @@ public class Person {
 	
 	public void addFilm(Films e) {
 		Films.add(e);
-		System.out.println("Added : "+e.getTitle());
+		//System.out.println("Added : "+e.getTitle());
 	}
 	
 	public void personPrint() {
@@ -19,7 +19,7 @@ public class Person {
 	          allfilms = allfilms + " | "+ films.getTitle();
 	        });
 		System.out.println("Character information : \nName : "+getName()+"\nGender : "+getGender()+"\n"
-				+ "Species : "+getSpecies()+"\nFilms : "+ allfilms);
+				+ "Species : "+getSpecies()+"\nFilms Appeared In : "+ allfilms);
 		
 		allfilms = ""; //Clear stored string
 	}
