@@ -76,28 +76,6 @@ public class App {
 
 	}
 
-	public void httpConnect(HttpGet getRequest) throws ClientProtocolException, IOException {
-
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		getRequest.addHeader("accept", "application/json");
-		HttpResponse response = httpClient.execute(getRequest);
-
-		if (response.getStatusLine().getStatusCode() != 200) {
-			throw new RuntimeException("Failed : HTTP error code : "
-					+ response.getStatusLine().getStatusCode());
-		}
-
-		reader = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
-
-		String line;
-		StringBuilder stringBuilder = new StringBuilder();
-		while ((line = reader.readLine()) != null) {
-			stringBuilder.append(line);
-			Logger.appLog("[HttpConnect SB] : "+line);
-		}
-
-	}
-
 
 	public JsonObject httpRequest(HttpGet getRequest, String type) throws IOException {
 		HttpClient httpClient = HttpClientBuilder.create().build();
