@@ -33,8 +33,8 @@ public class ConsolePrint {
 			System.out.println("1 - All Characters");
 			System.out.println("2 - Search Character");
 			System.out.println("3 - View Search History");
-			System.out.println("4 - Random Character");
-			System.out.println("5 - Advanced Search (All Info)");
+			System.out.println("4 - View Search History (Tabular)");
+			System.out.println("5 - Random Character Info");
 			System.out.println("6 - Planet Search");
 			System.out.println("7 - Ship Search");
 			System.out.println("8 - Star Wars F.O.T.D");
@@ -150,6 +150,7 @@ public class ConsolePrint {
 				}
 				catch (InputMismatchException e) {
 					Main.menuactions.endResult(false, 3, "This is not the number you are looking for....\nPress \"Enter\" to retry.\n");
+				
 				}
 			}
 			else if(App.networkConnected == false){
@@ -162,5 +163,29 @@ public class ConsolePrint {
 	public void menuStatus() {
 		System.out.println("[AppOnline : "+ App.networkConnected +"] | [DebugMode : "+App.debug_mode + "] | [DirectoryExists : "+App.directory_exists + "]");
 	}
+	
+	public void continueSearch() {
+		if(App.character_count > 0 ) {
+		System.out.println("\nThere are : "+App.character_count + " character results.\nDo you want to display them all ?\n"
+				+ "(This will take a while!)");
+		System.out.println("==================================================================================\n");
+		System.out.println("Enter \"Y\" / \"N\"");
+		System.out.println("\n==================================================================================\n");
+		Scanner yes_no = new Scanner(System.in);
+		String answer = yes_no.nextLine();
+		if(answer.equals("y") || answer.equals("Y")) {
+			System.out.println("Proceeding ");
+			Main.menuactions.app.displayAll(Main.menuactions.app.temp_array);
+		}
+		else if(answer.equals("n") || answer.equals("N")) {
+			System.out.println("Proceeding ");
+		}
+		else {
+			System.out.println("Invalid response ");
+			continueSearch();
+		}
+		}
+			
+		}
 
 }

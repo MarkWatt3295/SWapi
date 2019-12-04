@@ -30,7 +30,8 @@ public class MenuActions {
 
 		switch (command) {
 		case 1:
-			System.out.println("All Characters");
+			app.AllCharacters();
+			endResult(false, 1, "Press \"ENTER\" to continue...");
 			break;
 
 		case 2:
@@ -193,6 +194,8 @@ public class MenuActions {
 		System.exit(0);
 
 	}
+	
+	
 
 
 

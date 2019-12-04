@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -23,6 +22,7 @@ public class App {
 	public static boolean debug_mode = false;
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
+	public static int character_count = 0;
 
 	private String temptype = "";
 
@@ -31,6 +31,11 @@ public class App {
 
 	private BufferedReader reader;
 	private HttpResponse response;
+	public JsonArray temp_array;
+	
+	String name = "Not Set";
+	String gender = "Not Set";
+	
 
 
 
@@ -53,6 +58,28 @@ public class App {
 		}
 		catch (IllegalArgumentException e) {
 			System.err.println("Unable to search for : "+searchquery+" as it contains an illegal character.\nPlease try again.");
+			e.printStackTrace();
+
+		}  
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void AllCharacters()  {
+
+		HttpGet httpGet = new HttpGet("https://swapi.co/api/people");
+		System.out.println("\nParsing Midi-chlorians, This may take a second...\n");
+
+		Logger.appLog("[AllCharacters] Get is : "+httpGet);
+
+		try {
+			requestAll(httpGet);
+		}
+		catch (IllegalArgumentException e) {
+
 			e.printStackTrace();
 
 		}  
@@ -192,7 +219,78 @@ public class App {
 	}
 
 
+	public void requestAll(HttpGet getRequest) throws Exception {
+
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		getRequest.addHeader("accept", "application/json");
+		HttpResponse response = httpClient.execute(getRequest);
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : "
+					+ response.getStatusLine().getStatusCode());
+		}
+
+		reader = new BufferedReader(
+				new InputStreamReader((response.getEntity().getContent())));
+
+		String line;
+		StringBuilder stringBuilder = new StringBuilder();
+		while ((line = reader.readLine()) != null) {
+			stringBuilder.append(line);
+			Logger.appLog("[RequestAll-SB]"+line);
+		}
+
+		JsonObject jsonObject = deserialize(stringBuilder.toString());
+		JsonElement count = jsonObject.get("count");
+		System.err.println("COUNT IS : "+count);
+		character_count= count.getAsInt();
+		
+		temp_array = jsonObject.getAsJsonArray("results");
+		reader.close();
+		if(character_count > 0) {
+		Main.menuactions.console.continueSearch();
+		}
+	}
 	
+	
+
+	public void displayAll(JsonArray arr) {
+		for (int i = 0; i < arr.size(); i++) {
+			JsonObject result = arr.get(i).getAsJsonObject();
+			name = arr.get(i).getAsJsonObject().get("name").getAsString();
+			gender = arr.get(i).getAsJsonObject().get("gender").getAsString();
+			Person p = new Person();
+			Films f = new Films();
+			p.setName(name);
+			p.setGender(gender);
+			if(App.networkConnected == false){  
+				System.err.println("ERRRRRRRROOOOOORRRR"); 
+				App.networkError();
+				break;
+			}
+			// System.out.println("Name is : "+name);
+			//   System.out.println("Gender is : "+gender);
+			JsonArray species = result.getAsJsonArray("species");
+			JsonArray films = result.getAsJsonArray("films");
+			//System.out.println("Films size : "+films.size());
+			//System.out.println("species is : "+species);
+			printSubCall("name", species);
+			p.setSpecies(temptype);
+			printSubCall("title", films);
+
+			Films.forEach(film -> {
+				//System.out.println(film.getTitle());
+				p.addFilm(film);
+
+			});
+			Films.clear();
+			People.add(p);
+			p.personPrint();
+			System.out.println("\n");
+
+		}
+	}
+
 
 	
 
