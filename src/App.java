@@ -19,10 +19,12 @@ import com.google.gson.JsonObject;
 
 public class App {
 
-	public static boolean debug_mode = true;
+	public static boolean debug_mode = false;
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
 	public static int character_count = 0;
+	public String next_page = "null";
+	public boolean allow_next = true;
 
 	private String temptype = "";
 
@@ -32,6 +34,7 @@ public class App {
 	private BufferedReader reader;
 	private HttpResponse response;
 	public JsonArray temp_array;
+	public boolean first_run = true;
 	
 	String name = "Not Set";
 	String gender = "Not Set";
@@ -202,6 +205,10 @@ public class App {
 		JsonObject jsonObject = deserialize(stringBuilder.toString());
 		JsonElement count = jsonObject.get("count");
 		System.err.println("COUNT IS : "+count);
+		JsonElement next = jsonObject.get("next");
+		System.err.println("NEXT IS : "+next);
+		next_page = getRequest.getURI().toString();
+		
 		character_count= count.getAsInt();
 		
 		temp_array = jsonObject.getAsJsonArray("results");
@@ -256,16 +263,20 @@ public class App {
 	}
 
 	public void countedRequest(HttpGet getRequest) throws Exception {
+		
 		String getty = getRequest.getURI().toString();
 		System.out.println(getty +  " : getty");
-		for (int i = 1; i < 9; i++) {
-			System.out.println("i is "+i);
-		HttpGet get = new HttpGet(getty+"/?page="+i);
-		System.out.println("Actual get is : "+get);
+		System.out.println("NEXT IS : "+next_page);
+		
+		int i = 0;
+		while(allow_next != false) {
+		i++;
+		getRequest = new HttpGet(next_page);
+		System.out.println("Actual get is : "+getRequest);
 		
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		getRequest.addHeader("accept", "application/json");
-		HttpResponse response = httpClient.execute(get);
+		HttpResponse response = httpClient.execute(getRequest);
 
 		if (response.getStatusLine().getStatusCode() != 200) {
 			throw new RuntimeException("Failed : HTTP error code : "
@@ -287,8 +298,16 @@ public class App {
 		System.err.println("Person Number : "+i);
 		JsonElement next = jsonObject.get("next");
 		System.err.println("NEXT IS : "+next);
-		
+		String s = "";
 		displayAll(arr);
+		try{
+			s = next.getAsString();
+			next_page = s;
+		}
+		catch(UnsupportedOperationException e) {
+			break;
+		}
+		
 
 		reader.close();
 		}
@@ -340,7 +359,7 @@ public class App {
 				}
 			}
 		} else {
-			System.out.println("Not in URI check");
+			System.out.println("Not in URI check - Only in One Movie");
 		}
 
 

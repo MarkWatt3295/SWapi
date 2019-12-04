@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.util.Scanner;
 
+import org.apache.http.client.methods.HttpGet;
+
 public class MenuActions {
 	
 	private String character_text;
@@ -20,8 +22,8 @@ public class MenuActions {
 			break;
 
 		default:
-			System.err.println(command + " is not the dro.. number you're looking for.\nTry again.");
-			console.printGuiChoice();
+			
+			endResult(false, 2, command + " is not the dro.. number you're looking for.\nTry again.");
 			break;
 		}
 	}
@@ -31,6 +33,9 @@ public class MenuActions {
 		switch (command) {
 		case 1:
 			app.AllCharacters();
+			System.out.println("==================================================================================\n");
+			System.out.println("All Characters Loaded\n");
+			System.out.println("==================================================================================\n");
 			endResult(false, 1, "Press \"ENTER\" to continue...");
 			break;
 
@@ -61,7 +66,16 @@ public class MenuActions {
 			console.arraylistTable();
 			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
 			break;
-
+		case 5:
+			HttpGet get = new HttpGet("https://swapi.co/api/people/?page=9");
+			try {
+				app.requestAll(get);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
+			break;
 		case 9:
 			clrscr();
 			System.out.println("==================================================================================\n");

@@ -80,6 +80,7 @@ public class ConsolePrint {
 	}
 
 	public void printGuiChoice(){
+		Main.menuactions.clrscr();
 		AsciiArt.asciiDraw();
 		Thread thread = new Thread();
 		thread.runTask1();
@@ -100,7 +101,8 @@ public class ConsolePrint {
 		catch (InputMismatchException e) {
 
 			System.err.println();
-			Main.menuactions.endResult(true, 2, "*Wave Hand* This is not the number you're looking for....\nEnter a number from the menu.\n\n\"Press Enter to Continue\"");
+			Main.menuactions.endResult(false, 2, "*Wave Hand* This is not the number you're looking for....\nEnter a number from the menu.\n\n\"Press Enter to Continue\"");
+			
 		}
 
 	}
@@ -109,12 +111,14 @@ public class ConsolePrint {
 
 		System.out.println("-----------------------------------------------------------------------------");
 		ArrayListTable aat = new ArrayListTable();
-		
+		int i = 1;
 		for(Person person: 	Main.menuactions.app.People){
-			
+			String j = Integer.toString(i);
+			aat.row0.add(j);
 			aat.row1.add(person.getName());
 			aat.row2.add(person.getGender());
 			aat.row3.add(person.getSpecies());
+			i++;
 		}
 		aat.buildTable(5);
 		System.out.println("-----------------------------------------------------------------------------");
@@ -129,7 +133,7 @@ public class ConsolePrint {
 			AsciiArt.asciiDraw5();
 			System.out.println("\n==================================================================================\n");
 			System.out.println("1 - Enable Debug Text (Console Debug)");
-			System.out.println("2 - ");
+			System.out.println("2 - Clear Character ArrayList");
 			System.out.println("3 - ");
 			System.out.println("4 - ");
 			System.out.println("5 - Return to Main Menu");
@@ -169,7 +173,7 @@ public class ConsolePrint {
 	
 	public void continueSearch(HttpGet get) {
 		if(App.character_count > 0 ) {
-		System.out.println("\nThere are : "+App.character_count + " character results.\nDo you want to display them all ?\n"
+		System.out.println("\nThere are : "+App.character_count + " character results.\n\nDo you want to display them all ?\n"
 				+ "(This will take a while!)");
 		System.out.println("==================================================================================\n");
 		System.out.println("Enter \"Y\" / \"N\"");
@@ -177,7 +181,7 @@ public class ConsolePrint {
 		Scanner yes_no = new Scanner(System.in);
 		String answer = yes_no.nextLine();
 		if(answer.equals("y") || answer.equals("Y")) {
-			System.out.println("Proceeding ");
+			
 			try {
 				Main.menuactions.app.countedRequest(get);
 			} catch (Exception e) {
@@ -186,7 +190,7 @@ public class ConsolePrint {
 			}
 		}
 		else if(answer.equals("n") || answer.equals("N")) {
-			System.out.println("Proceeding ");
+			Main.menuactions.console.menuDraw();
 		}
 		else {
 			System.out.println("Invalid response ");
