@@ -1,3 +1,2 @@
-SWapi started at : [ 04/12/19 11:53:02 ]
-SWapi started at : [ 04/12/19 11:57:18 ]
-SWapi started at : [ 04/12/19 11:59:46 ]
+
+[ 04/12/19 15:30:19 ] SWapi started at : 

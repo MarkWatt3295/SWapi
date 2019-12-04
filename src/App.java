@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class App {
 
 	public static boolean debug_mode = false;
 	public static boolean networkConnected = false;
+	public static boolean directory_exists = false;
+
 	private String temptype = "";
 
 	List<Person> People = new ArrayList<>();
@@ -28,37 +31,30 @@ public class App {
 
 	private BufferedReader reader;
 	private HttpResponse response;
-	private StringBuilder stringBuilder = new StringBuilder();
-	
-	private HttpClient httpClient = HttpClientBuilder.create().build();
+
+
+
 
 	/**
 	 * 
-	 * @param type - (Search type people/spaceship etc)
 	 * @param searchquery - (specifically named e.g Luke)
 	 * @return
 	 * @throws Exception
 	 */
-
-
-
 	public void swapiCharacterSearch(String searchquery)  {
-		
+
 		HttpGet httpGet = new HttpGet("https://swapi.co/api/people/?search=" + searchquery);
-		System.out.println("\nParsing Midi-chlorians, This may take a second...");
-		try {
-			Logger.appLog("[SWapiCharachterSearch] Get is : "+httpGet);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} 
+		System.out.println("\nParsing Midi-chlorians, This may take a second...\n");
+
+		Logger.appLog("[SWapiCharachterSearch] Get is : "+httpGet);
+
 		try {
 			personRequest(httpGet);
 		}
 		catch (IllegalArgumentException e) {
 			System.err.println("Unable to search for : "+searchquery+" as it contains an illegal character.\nPlease try again.");
 			e.printStackTrace();
-			
+
 		}  
 		catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -68,48 +64,64 @@ public class App {
 	}
 
 
-	public void StraightSwapiSearch(String uri, String type) throws Exception {
+	public void StraightSwapiSearch(String uri, String type) {
 		HttpGet httpGet = new HttpGet(uri);
-		System.out.println("[ StraightSwapiSearch ] The straight get is : "+httpGet); 
-		httpRequest(httpGet, type);
+		Logger.appLog("[ StraightSwapiSearch ] The straight get is : "+httpGet); 
+		try {
+			httpRequest(httpGet, type);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
 	public void httpConnect(HttpGet getRequest) throws ClientProtocolException, IOException {
-		
-		
+
+		HttpClient httpClient = HttpClientBuilder.create().build();
 		getRequest.addHeader("accept", "application/json");
 		HttpResponse response = httpClient.execute(getRequest);
-		
-		
 
 		if (response.getStatusLine().getStatusCode() != 200) {
 			throw new RuntimeException("Failed : HTTP error code : "
 					+ response.getStatusLine().getStatusCode());
 		}
 
-		
-			reader = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
-		
+		reader = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
 
 		String line;
-
+		StringBuilder stringBuilder = new StringBuilder();
 		while ((line = reader.readLine()) != null) {
 			stringBuilder.append(line);
-			// System.out.println("http : "+line);
+			Logger.appLog("[HttpConnect SB] : "+line);
 		}
-		
+
 	}
 
 
 	public JsonObject httpRequest(HttpGet getRequest, String type) throws IOException {
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		Logger.appLog("[HttpRequest] : "+ getRequest + " "+type);
+		getRequest.addHeader("accept", "application/json");
+		HttpResponse response = httpClient.execute(getRequest);
 
-		httpConnect(getRequest);
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : "
+					+ response.getStatusLine().getStatusCode());
+		}
+
+		reader = new BufferedReader(
+				new InputStreamReader((response.getEntity().getContent())));
+
+		String line;
+		StringBuilder stringBuilder = new StringBuilder();
+		while ((line = reader.readLine()) != null) {
+			stringBuilder.append(line);
+			Logger.appLog(line);
+		}
 
 		JsonObject jsonObject = deserialize(stringBuilder.toString());
-
-
-		closeReader();
 
 		if(type == "species") {
 			String name =  jsonObject.get("name").getAsString();
@@ -125,18 +137,12 @@ public class App {
 		return jsonObject;
 	}
 
-	private void closeReader() throws IOException {
-		reader.close();
-		stringBuilder.setLength(0); //Empty the builder ready for next search
-
-	}
-
 	public JsonObject personRequest(HttpGet getRequest) throws Exception {
 
-		
+		HttpClient httpClient = HttpClientBuilder.create().build();
 		getRequest.addHeader("accept", "application/json");
 		HttpResponse response = httpClient.execute(getRequest);
-		
+
 
 		if (response.getStatusLine().getStatusCode() != 200) {
 			throw new RuntimeException("Failed : HTTP error code : "
@@ -150,7 +156,7 @@ public class App {
 		StringBuilder stringBuilder = new StringBuilder();
 		while ((line = reader.readLine()) != null) {
 			stringBuilder.append(line);
-			//System.out.println(line);
+			Logger.appLog("[PersonRequest-SB]"+line);
 		}
 
 		JsonObject jsonObject = deserialize(stringBuilder.toString());
@@ -164,6 +170,9 @@ public class App {
 		if(arr.size() > 1) {
 			System.err.println("There are multiple results for this search.\n");
 		}
+		else if(arr.size() >= 10) {
+			System.err.println("There are quite a few results for this search. This may take a moment.\n");
+		}
 		for (int i = 0; i < arr.size(); i++) {
 			//System.out.println("arr = "+arr);
 			JsonObject result = arr.get(i).getAsJsonObject();
@@ -173,11 +182,11 @@ public class App {
 			Films f = new Films();
 			p.setName(name);
 			p.setGender(gender);
-			 if(App.networkConnected == false){  
-		            System.err.println("ERRRRRRRROOOOOORRRR"); 
-		            App.networkError();
-		            break;
-			 }
+			if(App.networkConnected == false){  
+				System.err.println("ERRRRRRRROOOOOORRRR"); 
+				App.networkError();
+				break;
+			}
 			// System.out.println("Name is : "+name);
 			//   System.out.println("Gender is : "+gender);
 			JsonArray species = result.getAsJsonArray("species");
@@ -194,18 +203,13 @@ public class App {
 
 			});
 			Films.clear();
-
-
-
 			People.add(p);
 			p.personPrint();
 			System.out.println("\n");
 
 		}
 
-
 		reader.close();
-
 		return jsonObject;
 	}
 
@@ -217,14 +221,13 @@ public class App {
 		} else {
 			httpGet = new HttpGet("https://swapi.co/api/" + type + "/?search=" + searchquery);
 		}
-		System.out.println("httpGet is : "+httpGet);
+		Logger.appLog("[swapiSearch httpGet] is : "+httpGet);
 		return getRequest(httpGet);
 	}
 
 	public JsonObject getRequest(HttpGet getRequest) throws IOException {
-		
 
-		
+		HttpClient httpClient = HttpClientBuilder.create().build();
 		getRequest.addHeader("accept", "application/json");
 		HttpResponse response = httpClient.execute(getRequest);
 
@@ -232,7 +235,6 @@ public class App {
 			throw new RuntimeException("Failed : HTTP error code : "
 					+ response.getStatusLine().getStatusCode());
 		}
-		
 
 		BufferedReader bufferedReader = new BufferedReader(
 				new InputStreamReader((response.getEntity().getContent())));
@@ -260,7 +262,6 @@ public class App {
 		System.out.println("Name is : "+name);
 		System.out.println("Gender is : "+gender);
 
-
 		return jsonObject;
 	}
 
@@ -278,23 +279,21 @@ public class App {
 
 
 	public void printSubCall(String entity, JsonArray jsonArray)  {
-		System.out.println("[ SubPrint call ] Item : "+entity+"Array : "+jsonArray+" Array Size : "+jsonArray.size());
-		
+		Logger.appLog("[ SubPrint call ] Item : "+entity+"Array : "+jsonArray+" Array Size : "+jsonArray.size());
+
 		if (jsonArray.size() != 0) {
 			for (int j = 0; j < jsonArray.size(); j++) {
-				System.out.println("Currently on loop : "+j);
-				 if(App.networkConnected == false){  
-			            System.err.println("S connection error has occured"); 
-			            App.networkError();
-			            break;
-				 }
+				Logger.appLog("Currently on loop : "+j);
+				if(App.networkConnected == false){  
+					System.err.println("A connection error has occured"); 
+					App.networkError();
+					break;
+				}
 				JsonElement character = jsonArray.get(j);
 				String uri = character.getAsString();
-				System.out.println("print uri is : "+uri);
+				Logger.appLog("print uri is : "+uri);
 
 				if(uri.contains("species")){
-
-
 					try {
 						StraightSwapiSearch(uri, "species");
 					} catch (Exception e) {
@@ -316,33 +315,32 @@ public class App {
 				}
 			}
 		} else {
-			System.out.println("nothing here");
+			System.out.println("Not in URI check");
 		}
-		
-		
+
+
 	}
-	
+
 	public static void clearLogs() {
 		try {
-			Runtime.getRuntime().exec("cmd /c del SWapi_Log.txt");
+			Runtime.getRuntime().exec("cmd /c del Swapi\\SWapi_Log.txt");
 		} catch (IOException e) {
 			System.err.println("Unable to delete Swapi_Log.txt");
 		}
-		
+
 		try {
-			Runtime.getRuntime().exec("cmd /c del SWapi_Thread_Log.txt");
+			Runtime.getRuntime().exec("cmd /c del Swapi\\SWapi_Thread_Log.txt");
 		} catch (IOException e) {
 			System.err.println("Unable to delete Swapi_Thread_Log.txt");
 		}
 	}
 
-public static void networkError() {
-		
-		
+	public static void networkError() {
+
 		System.out.println("=====================================================================================================");
 		System.out.println("\nIt looks like you dont have an active Network Connection.\nThis App requires a connection in order to access the Star Wars API.");
 		System.out.println("=====================================================================================================\n");
-		
+
 		Scanner input = new Scanner(System.in); 
 		System.out.println("Would you like to retry your connection?  Y / N ? :");
 		String reply = input.nextLine();
@@ -353,20 +351,31 @@ public static void networkError() {
 			Main.main(null);
 		}
 		else if(reply.equals("n") || reply.equals("N")) {
-			
+
 			System.out.println("\n=====================================================================================================");
 			System.out.println("Exiting App............ May the force be with you!");
 			System.out.println("=====================================================================================================");
 			System.exit(0);
-			
+
 		}
-		
+
 		else {
-			
+
 			System.out.println("\n=====================================================================================================");
 			System.out.println("There is only 'Y' or 'N'... There is no Try");
 			System.out.println("=====================================================================================================\n");
 			Main.main(null);
+		}
+	}
+
+	public void createDir() {
+		File file = new File("SWapi\\config.txt");
+		file.getParentFile().mkdir(); 
+		try {
+			file.createNewFile();
+		} catch (IOException e) {
+			System.out.println("Failed to create directory " + file.getParent());
+			e.printStackTrace();
 		}
 	}
 
