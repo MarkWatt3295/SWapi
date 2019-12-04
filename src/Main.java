@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -7,23 +8,35 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) {
-
+		File file = new File("SWapi\\config.txt");
+		 file.getParentFile().mkdir(); 
+		    try {
+				file.createNewFile();
+			} catch (IOException e) {
+				System.out.println("Failed to create directory " + file.getParent());
+				e.printStackTrace();
+			}
+		
 		StartUpCheck();
 
 	}
 
 	private static void StartUpCheck() {
 		try {
+			
 			URL url = new URL("https://swapi.co/");
 			URLConnection connection = url.openConnection();
 			connection.connect();
-			System.out.println("\n=====================================================================================================");
-			System.out.println("Connection Established");
-			System.out.println("=====================================================================================================\n\n");
-			Console console = new Console();
 			App.networkConnected = true; 
-			Logger.appLog("SWapi started at :");
+			System.out.println("\n==================================================================================");
+			System.out.println("Connection Established");
+			System.out.println("==================================================================================\n\n");
 			
+			Console console = new Console();
+			console.clrscr(); //Clear the Windows call form console (e.g C:\Users\ - Just to make it pretty)
+			console.app.clearLogs();
+			
+			Logger.appLog("SWapi started at : ");
 			console.printGuiChoice();
 
 		} catch (MalformedURLException e) {
