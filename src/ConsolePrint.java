@@ -1,8 +1,11 @@
 import java.io.IOException;
+import java.net.http.HttpRequest;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
+import org.apache.http.client.methods.HttpGet;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -164,7 +167,7 @@ public class ConsolePrint {
 		System.out.println("[AppOnline : "+ App.networkConnected +"] | [DebugMode : "+App.debug_mode + "] | [DirectoryExists : "+App.directory_exists + "]");
 	}
 	
-	public void continueSearch() {
+	public void continueSearch(HttpGet get) {
 		if(App.character_count > 0 ) {
 		System.out.println("\nThere are : "+App.character_count + " character results.\nDo you want to display them all ?\n"
 				+ "(This will take a while!)");
@@ -175,14 +178,19 @@ public class ConsolePrint {
 		String answer = yes_no.nextLine();
 		if(answer.equals("y") || answer.equals("Y")) {
 			System.out.println("Proceeding ");
-			Main.menuactions.app.displayAll(Main.menuactions.app.temp_array);
+			try {
+				Main.menuactions.app.countedRequest(get);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else if(answer.equals("n") || answer.equals("N")) {
 			System.out.println("Proceeding ");
 		}
 		else {
 			System.out.println("Invalid response ");
-			continueSearch();
+			continueSearch(get);
 		}
 		}
 			

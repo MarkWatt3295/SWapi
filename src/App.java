@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
 
 public class App {
 
-	public static boolean debug_mode = false;
+	public static boolean debug_mode = true;
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
 	public static int character_count = 0;
@@ -171,48 +171,7 @@ public class App {
 
 
 		JsonArray arr = jsonObject.getAsJsonArray("results");
-		System.out.println("Total Search Results : "+arr.size()+"\n");
-		if(arr.size() > 1) {
-			System.err.println("There are multiple results for this search.\n");
-		}
-		else if(arr.size() >= 10) {
-			System.err.println("There are quite a few results for this search. This may take a moment.\n");
-		}
-		for (int i = 0; i < arr.size(); i++) {
-			//System.out.println("arr = "+arr);
-			JsonObject result = arr.get(i).getAsJsonObject();
-			name = arr.get(i).getAsJsonObject().get("name").getAsString();
-			gender = arr.get(i).getAsJsonObject().get("gender").getAsString();
-			Person p = new Person();
-			Films f = new Films();
-			p.setName(name);
-			p.setGender(gender);
-			if(App.networkConnected == false){  
-				System.err.println("ERRRRRRRROOOOOORRRR"); 
-				App.networkError();
-				break;
-			}
-			// System.out.println("Name is : "+name);
-			//   System.out.println("Gender is : "+gender);
-			JsonArray species = result.getAsJsonArray("species");
-			JsonArray films = result.getAsJsonArray("films");
-			//System.out.println("Films size : "+films.size());
-			//System.out.println("species is : "+species);
-			printSubCall("name", species);
-			p.setSpecies(temptype);
-			printSubCall("title", films);
-
-			Films.forEach(film -> {
-				//System.out.println(film.getTitle());
-				p.addFilm(film);
-
-			});
-			Films.clear();
-			People.add(p);
-			p.personPrint();
-			System.out.println("\n");
-
-		}
+		displayAll(arr);
 
 		reader.close();
 		return jsonObject;
@@ -248,13 +207,18 @@ public class App {
 		temp_array = jsonObject.getAsJsonArray("results");
 		reader.close();
 		if(character_count > 0) {
-		Main.menuactions.console.continueSearch();
+		Main.menuactions.console.continueSearch(getRequest);
 		}
 	}
 	
 	
 
 	public void displayAll(JsonArray arr) {
+		System.out.println("Total Search Results : "+arr.size()+"\n");
+		int arrsize = arr.size();
+		if(arr.size() > 1) {
+			System.err.println("There are multiple results for this search.\n");
+		}
 		for (int i = 0; i < arr.size(); i++) {
 			JsonObject result = arr.get(i).getAsJsonObject();
 			name = arr.get(i).getAsJsonObject().get("name").getAsString();
@@ -291,6 +255,44 @@ public class App {
 		}
 	}
 
+	public void countedRequest(HttpGet getRequest) throws Exception {
+		String getty = getRequest.getURI().toString();
+		System.out.println(getty +  " : getty");
+		for (int i = 1; i < 9; i++) {
+			System.out.println("i is "+i);
+		HttpGet get = new HttpGet(getty+"/?page="+i);
+		System.out.println("Actual get is : "+get);
+		
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		getRequest.addHeader("accept", "application/json");
+		HttpResponse response = httpClient.execute(get);
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : "
+					+ response.getStatusLine().getStatusCode());
+		}
+
+		reader = new BufferedReader(
+				new InputStreamReader((response.getEntity().getContent())));
+
+		String line;
+		StringBuilder stringBuilder = new StringBuilder();
+		while ((line = reader.readLine()) != null) {
+			stringBuilder.append(line);
+			Logger.appLog("[countedRequest-SB]"+line);
+		}
+
+		JsonObject jsonObject = deserialize(stringBuilder.toString());
+		JsonArray arr = jsonObject.getAsJsonArray("results");
+		System.err.println("Person Number : "+i);
+		JsonElement next = jsonObject.get("next");
+		System.err.println("NEXT IS : "+next);
+		
+		displayAll(arr);
+
+		reader.close();
+		}
+	}
 
 	
 
@@ -401,5 +403,6 @@ public class App {
 			e.printStackTrace();
 		}
 	}
+	
 
 }
