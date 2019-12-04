@@ -192,56 +192,9 @@ public class App {
 	}
 
 
-	public JsonObject swapiSearch(String type, String searchquery) throws Exception {
-		HttpGet httpGet;
-		if (searchquery == null) {
-			httpGet = new HttpGet("https://swapi.co/api/" + type + "/");
-		} else {
-			httpGet = new HttpGet("https://swapi.co/api/" + type + "/?search=" + searchquery);
-		}
-		Logger.appLog("[swapiSearch httpGet] is : "+httpGet);
-		return getRequest(httpGet);
-	}
+	
 
-	public JsonObject getRequest(HttpGet getRequest) throws IOException {
-
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		getRequest.addHeader("accept", "application/json");
-		HttpResponse response = httpClient.execute(getRequest);
-
-		if (response.getStatusLine().getStatusCode() != 200) {
-			throw new RuntimeException("Failed : HTTP error code : "
-					+ response.getStatusLine().getStatusCode());
-		}
-
-		BufferedReader bufferedReader = new BufferedReader(
-				new InputStreamReader((response.getEntity().getContent())));
-
-		String line;
-		StringBuilder stringBuilder = new StringBuilder();
-		while ((line = bufferedReader.readLine()) != null) {
-			stringBuilder.append(line);
-			//System.out.println(line);
-		}
-
-		JsonObject jsonObject = deserialize(stringBuilder.toString());
-
-		String name = "Not Set";
-		String gender = "Not Set";
-
-
-		JsonArray arr = jsonObject.getAsJsonArray("results");
-		for (int i = 0; i < arr.size(); i++) {
-			name = arr.get(i).getAsJsonObject().get("name").getAsString();
-			gender = arr.get(i).getAsJsonObject().get("gender").getAsString();
-
-
-		}
-		System.out.println("Name is : "+name);
-		System.out.println("Gender is : "+gender);
-
-		return jsonObject;
-	}
+	
 
 	public JsonObject deserialize(String json) {
 		Gson gson = new Gson();
@@ -249,13 +202,7 @@ public class App {
 		return jsonClass;
 	}
 
-	public JsonObject innerRequest(String uri) throws IOException {
-		HttpGet httpGet = new HttpGet(uri);
-		return getRequest(httpGet);
-	}
-
-
-
+	
 	public void printSubCall(String entity, JsonArray jsonArray)  {
 		Logger.appLog("[ SubPrint call ] Item : "+entity+"Array : "+jsonArray+" Array Size : "+jsonArray.size());
 
