@@ -18,6 +18,7 @@ public class Thread {
 	private int task1totals = 0;
 	private String task1next;
 	public boolean write_logs = true;
+	public boolean allow_thread = true;
 
 	public String getTask1run() {
 		return task1run;
@@ -48,7 +49,7 @@ public class Thread {
 		Runnable runnable = new Runnable() {
 
 			public void run() {
-
+				if(allow_thread == true) {
 				DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss"); 
 				Date dateobj = new Date(); 
 				//System.out.println(df.format(dateobj));
@@ -86,6 +87,16 @@ public class Thread {
 				}
 				else {
 					App.directory_exists = false;
+				}
+				}
+				else {
+					try {
+						Logger.threadLog("Thread is currently Halted");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
 			}
 		};

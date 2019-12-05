@@ -1,2 +1,9 @@
 
-[ 05/12/19 12:29:20 ] SWapi started at : 
+[ 05/12/19 22:55:23 ] SWapi started at : 
+
+[ 05/12/19 22:55:23 ] SWapi started at : 
+
+[ 05/12/19 22:55:32 ] [SWapiCharachterSearch] Get is : GET https://swapi.co/api/people/17 HTTP/1.1
+
+[ 05/12/19 22:55:34 ] [personRequestGet : GET https://swapi.co/api/people/17 HTTP/1.1
+

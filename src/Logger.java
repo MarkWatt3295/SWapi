@@ -9,37 +9,44 @@ public class Logger {
 
 
 	public static void appLog(String message)  { 
+		if(Main.menuactions.app.enable_logs == true) {
+			if(App.debug_mode == true) {
+				System.out.println("\n"+message+"\n");
+			}
+			DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss"); 
+			Date dateobj = new Date(); 
+			String stamp = df.format(dateobj);
 
-		if(App.debug_mode == true) {
-			System.out.println("\n"+message+"\n");
+			PrintWriter writer;
+			try {
+				writer = new PrintWriter(new FileWriter("SWapi\\SWapi_Log.txt", true), true);
+				writer.write("\n[ "+stamp+" ] "+message+"\n");
+				writer.close();
+			} catch (IOException e) {
+				System.err.println("Failed to write appLog");
+				e.printStackTrace();
+				System.err.println("Unable to save appLog. Is the location missing?");
+				System.err.println("Attempting to recreate Directory....");
+				Main.menuactions.app.createDir();
+			}
 		}
-		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss"); 
-		Date dateobj = new Date(); 
-		String stamp = df.format(dateobj);
-
-		PrintWriter writer;
-		try {
-			writer = new PrintWriter(new FileWriter("SWapi\\SWapi_Log.txt", true), true);
-			writer.write("\n[ "+stamp+" ] "+message+"\n");
-			writer.close();
-		} catch (IOException e) {
-			System.err.println("Failed to write appLog");
-			e.printStackTrace();
-			System.err.println("Unable to save appLog. Is the location missing?");
-			System.err.println("Attempting to recreate Directory....");
-			Main.menuactions.app.createDir();
-		}
-
 
 	}
 
 	public static void threadLog(String message) throws IOException { 
-	
-		PrintWriter writer = new PrintWriter(new FileWriter("SWapi\\SWapi_Thread_Log.txt", true), true);
-		writer.write(message+"\n");
-		writer.close();
-
-
+		if(Main.menuactions.app.enable_logs == true) {
+			try {
+				PrintWriter writer = new PrintWriter(new FileWriter("SWapi\\SWapi_Thread_Log.txt", true), true);
+				writer.write(message+"\n");
+				writer.close();
+			} catch (IOException e) {
+				System.err.println("Failed to write threadLog");
+				e.printStackTrace();
+				System.err.println("Unable to save threadLog. Is the location missing?");
+				System.err.println("Attempting to recreate Directory....");
+				Main.menuactions.app.createDir();
+			}
+		}
 	}
 }
 

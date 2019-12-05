@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import org.apache.http.HttpResponse;
@@ -19,12 +20,16 @@ import com.google.gson.JsonObject;
 
 public class App {
 
-	public static boolean debug_mode = false;
+	public static boolean debug_mode = true;
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
 	public static int character_count = 0;
 	public String next_page = "null";
 	public boolean allow_next = true;
+	public Thread thread = new Thread();
+	public boolean initialised = false;
+	public boolean enable_logs = true;
+
 
 	private String temptype = "";
 
@@ -35,10 +40,10 @@ public class App {
 	private HttpResponse response;
 	public JsonArray temp_array;
 	public boolean first_run = true;
-	
+
 	String name = "Not Set";
 	String gender = "Not Set";
-	
+
 
 
 
@@ -49,9 +54,17 @@ public class App {
 	 * @return
 	 * @throws Exception
 	 */
-	public void swapiCharacterSearch(String searchquery)  {
+	public void swapiCharacterSearch(String searchquery, String searchnumber)  {
 
-		HttpGet httpGet = new HttpGet("https://swapi.co/api/people/?search=" + searchquery);
+		HttpGet httpGet;
+
+		if(searchnumber == null) {
+			httpGet = new HttpGet("https://swapi.co/api/people/?search=" + searchquery);
+		}
+		else {
+			httpGet = new HttpGet("https://swapi.co/api/people/" + searchnumber);
+			System.err.println("Searhcing by number using : "+httpGet.getURI());
+		}
 		System.out.println("\nParsing Midi-chlorians, This may take a second...\n");
 
 		Logger.appLog("[SWapiCharachterSearch] Get is : "+httpGet);
@@ -70,7 +83,7 @@ public class App {
 		}
 
 	}
-	
+
 	public void AllCharacters()  {
 
 		HttpGet httpGet = new HttpGet("https://swapi.co/api/people");
@@ -115,6 +128,7 @@ public class App {
 
 
 		if (response.getStatusLine().getStatusCode() != 200) {
+			errorCode(response);
 			throw new RuntimeException("Failed : HTTP error code : "
 					+ response.getStatusLine().getStatusCode());
 		}
@@ -151,10 +165,15 @@ public class App {
 		getRequest.addHeader("accept", "application/json");
 		HttpResponse response = httpClient.execute(getRequest);
 
+		Logger.appLog("[personRequestGet : "+getRequest+"\n");
+
 
 		if (response.getStatusLine().getStatusCode() != 200) {
+
+			errorCode(response);
 			throw new RuntimeException("Failed : HTTP error code : "
-					+ response.getStatusLine().getStatusCode());
+					+ response.getStatusLine().getStatusCode() );
+
 		}
 
 		reader = new BufferedReader(
@@ -168,18 +187,46 @@ public class App {
 		}
 
 		JsonObject jsonObject = deserialize(stringBuilder.toString());
+		Logger.appLog("[PersonRequest jsonObject] : "+jsonObject.toString()+"\n");
 
-		String name = "Not Set";
-		String gender = "Not Set";
-
-
-		JsonArray arr = jsonObject.getAsJsonArray("results");
-		displayAll(arr);
+		if(jsonObject.toString().contains("results")) {
+			JsonArray arr = jsonObject.getAsJsonArray("results");
+			displayAll(arr);
+		}
+		else {
+			Logger.appLog("[PersonRequest] : Doesn't contain an Array of Results\n");
+			displaySingle(jsonObject);
+		}
 
 		reader.close();
 		return jsonObject;
 	}
 
+	/**
+	 * A starwars related http error catch
+	 * @param response
+	 */
+	private void errorCode(HttpResponse response) {
+		AsciiArt.errorDraw("HTTP ERROR : "+response.getStatusLine().getStatusCode());
+		if(response.getStatusLine().getStatusCode() == 503) {
+			System.out.println("Let me do the talking Chewie...");
+		}
+		else if(response.getStatusLine().getStatusCode() == 500) {
+			System.out.println("I've got a bad feeling about this Chewie...");
+		}
+		else if(response.getStatusLine().getStatusCode() == 504) {
+			System.out.println("I've got a bad feeling about this Chewie...");
+		}
+		else if(response.getStatusLine().getStatusCode() == 403) {
+			System.out.println("I don't think we're supposed to be here Chewie.");
+		}
+		else {
+			System.out.println("Blast it Chewie! We didn't account for this");
+		}
+		Main.menuactions.console.menuDraw();
+		System.out.println("==================================================================================");
+
+	}
 
 	public void requestAll(HttpGet getRequest) throws Exception {
 
@@ -188,6 +235,7 @@ public class App {
 		HttpResponse response = httpClient.execute(getRequest);
 
 		if (response.getStatusLine().getStatusCode() != 200) {
+			errorCode(response);
 			throw new RuntimeException("Failed : HTTP error code : "
 					+ response.getStatusLine().getStatusCode());
 		}
@@ -199,30 +247,39 @@ public class App {
 		StringBuilder stringBuilder = new StringBuilder();
 		while ((line = reader.readLine()) != null) {
 			stringBuilder.append(line);
-			Logger.appLog("[RequestAll-SB]"+line);
+			Logger.appLog("[RequestAll-StringBuilder] : "+line);
 		}
 
 		JsonObject jsonObject = deserialize(stringBuilder.toString());
 		JsonElement count = jsonObject.get("count");
-		System.err.println("COUNT IS : "+count);
+		Logger.appLog("COUNT IS : "+count);
 		JsonElement next = jsonObject.get("next");
-		System.err.println("NEXT IS : "+next);
+		Logger.appLog("THE NEXT PAGE TO SEARCH IS : "+next);
 		next_page = getRequest.getURI().toString();
-		
+
 		character_count= count.getAsInt();
-		
+
 		temp_array = jsonObject.getAsJsonArray("results");
 		reader.close();
 		if(character_count > 0) {
-		Main.menuactions.console.continueSearch(getRequest);
+			Main.menuactions.console.continueSearch(getRequest);
 		}
 	}
-	
-	
+
+
 
 	public void displayAll(JsonArray arr) {
-		System.out.println("Total Search Results : "+arr.size()+"\n");
-		int arrsize = arr.size();
+
+		if(arr.size() != 0) {
+			Logger.appLog("Total Search Results per page : "+arr.size()+"\n");
+		}
+		if(arr.size() == 0) {
+			System.out.println("\n==================================================================================");
+			System.out.println("Mmm... No results are there. Try again you will.");
+			System.out.println("==================================================================================\n");
+
+		}
+
 		if(arr.size() > 1) {
 			System.err.println("There are multiple results for this search.\n");
 		}
@@ -239,12 +296,9 @@ public class App {
 				App.networkError();
 				break;
 			}
-			// System.out.println("Name is : "+name);
-			//   System.out.println("Gender is : "+gender);
+
 			JsonArray species = result.getAsJsonArray("species");
 			JsonArray films = result.getAsJsonArray("films");
-			//System.out.println("Films size : "+films.size());
-			//System.out.println("species is : "+species);
 			printSubCall("name", species);
 			p.setSpecies(temptype);
 			printSubCall("title", films);
@@ -261,59 +315,88 @@ public class App {
 
 		}
 	}
+	
+	public void displaySingle(JsonObject job) {
+
+			name = job.get("name").getAsString();
+			gender = job.getAsJsonObject().get("gender").getAsString();
+			Person p = new Person();
+			Films f = new Films();
+			p.setName(name);
+			p.setGender(gender);
+			
+			if(App.networkConnected == false){  
+				System.err.println("ERRRRRRRROOOOOORRRR"); 
+				App.networkError();
+			}
+
+			JsonArray species = job.getAsJsonArray("species");
+			JsonArray films = job.getAsJsonArray("films");
+			printSubCall("name", species);
+			p.setSpecies(temptype);
+			printSubCall("title", films);
+
+			Films.forEach(film -> {
+				p.addFilm(film);
+
+			});
+			Films.clear();
+			People.add(p);
+			p.personPrint();
+			System.out.println("\n");
+	}
+
 
 	public void countedRequest(HttpGet getRequest) throws Exception {
-		
+
 		String getty = getRequest.getURI().toString();
-		System.out.println(getty +  " : getty");
-		System.out.println("NEXT IS : "+next_page);
-		
+		Logger.appLog(getty +  " : getty - Requested URI");
+
 		int i = 0;
 		while(allow_next != false) {
-		i++;
-		getRequest = new HttpGet(next_page);
-		System.out.println("Actual get is : "+getRequest);
-		
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		getRequest.addHeader("accept", "application/json");
-		HttpResponse response = httpClient.execute(getRequest);
+			i++;
+			getRequest = new HttpGet(next_page);
+			Logger.appLog("Actual get is : "+getRequest);
 
-		if (response.getStatusLine().getStatusCode() != 200) {
-			throw new RuntimeException("Failed : HTTP error code : "
-					+ response.getStatusLine().getStatusCode());
-		}
+			HttpClient httpClient = HttpClientBuilder.create().build();
+			getRequest.addHeader("accept", "application/json");
+			HttpResponse response = httpClient.execute(getRequest);
 
-		reader = new BufferedReader(
-				new InputStreamReader((response.getEntity().getContent())));
+			if (response.getStatusLine().getStatusCode() != 200) {
+				errorCode(response);
+				throw new RuntimeException("Failed : HTTP error code : "
+						+ response.getStatusLine().getStatusCode());
+			}
 
-		String line;
-		StringBuilder stringBuilder = new StringBuilder();
-		while ((line = reader.readLine()) != null) {
-			stringBuilder.append(line);
-			Logger.appLog("[countedRequest-SB]"+line);
-		}
+			reader = new BufferedReader(
+					new InputStreamReader((response.getEntity().getContent())));
 
-		JsonObject jsonObject = deserialize(stringBuilder.toString());
-		JsonArray arr = jsonObject.getAsJsonArray("results");
-		System.err.println("Person Number : "+i);
-		JsonElement next = jsonObject.get("next");
-		System.err.println("NEXT IS : "+next);
-		String s = "";
-		displayAll(arr);
-		try{
-			s = next.getAsString();
-			next_page = s;
-		}
-		catch(UnsupportedOperationException e) {
-			break;
-		}
-		
+			String line;
+			StringBuilder stringBuilder = new StringBuilder();
+			while ((line = reader.readLine()) != null) {
+				stringBuilder.append(line);
+				Logger.appLog("[countedRequest-SB] : "+line);
+			}
 
-		reader.close();
+			JsonObject jsonObject = deserialize(stringBuilder.toString());
+			JsonArray arr = jsonObject.getAsJsonArray("results");
+			JsonElement next = jsonObject.get("next");
+			String s = "";
+			displayAll(arr);
+			try{
+				s = next.getAsString();
+				next_page = s;
+			}
+			catch(UnsupportedOperationException e) {
+				break;
+			}
+
+
+			reader.close();
 		}
 	}
 
-	
+
 
 	public JsonObject deserialize(String json) {
 		Gson gson = new Gson();
@@ -321,7 +404,7 @@ public class App {
 		return jsonClass;
 	}
 
-	
+
 	public void printSubCall(String entity, JsonArray jsonArray)  {
 		Logger.appLog("[ SubPrint call ] Item : "+entity+"Array : "+jsonArray+" Array Size : "+jsonArray.size());
 
@@ -422,6 +505,23 @@ public class App {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public static int getRandomNumberInRange(int min, int max) {
+
+		if (min >= max) {
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
+	}
+
+	/**
+	 * InitialiseApp is used to start the App thread and log the first message.
+	 */
+	public void initialiseApp() {
+		thread.runTask1();
+		Logger.appLog("SWapi started at : ");
+	}
 
 }

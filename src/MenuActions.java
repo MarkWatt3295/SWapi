@@ -1,10 +1,12 @@
+import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
 import org.apache.http.client.methods.HttpGet;
 
 public class MenuActions {
-	
+
 	private String character_text;
 	App app = new App();
 	ConsolePrint console = new ConsolePrint();
@@ -22,7 +24,7 @@ public class MenuActions {
 			break;
 
 		default:
-			
+
 			endResult(false, 2, command + " is not the dro.. number you're looking for.\nTry again.");
 			break;
 		}
@@ -44,12 +46,12 @@ public class MenuActions {
 			Scanner input = new Scanner(System.in);
 			character_text = input.nextLine();
 			checkString(character_text);
-			app.swapiCharacterSearch(character_text);
+			app.swapiCharacterSearch(character_text, null);
 			endResult(false, 1, "Press \"ENTER\" to continue...");
 			break;
 
 		case 3:
-			
+
 			if(app.People.size() == 0) {
 				System.err.println("You currently haven't searched for anyone.");
 			}
@@ -68,14 +70,24 @@ public class MenuActions {
 			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
 			break;
 		case 5:
-			HttpGet get = new HttpGet("https://swapi.co/api/people/?page=9");
-			try {
-				app.requestAll(get);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			int r;
+			System.out.println("Random Char");
+
+			if(App.character_count > 0) {
+
+				r = App.getRandomNumberInRange(1, App.character_count);
+				
+				System.err.println("R is "+r);
+				app.swapiCharacterSearch(null, Integer.toString(r));
 			}
-			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
+			else {
+
+
+				r = App.getRandomNumberInRange(1, 87);
+				System.err.println("R is "+r);
+				app.swapiCharacterSearch(null, Integer.toString(r));
+			}
+
 			break;
 		case 9:
 			clrscr();
@@ -120,12 +132,54 @@ public class MenuActions {
 			break;
 
 		case 2:
+			System.out.println("Person Array = "+app.People.size()+" Films Array = "+app.Films.size() + "\n");
+			app.People.clear();
+			app.Films.clear();
+			System.out.println("Character Arrays have been Cleared");
+			System.out.println("Person Array = "+app.People.size()+" Films Array = "+app.Films.size() + "\n");
+			endResult(false, 3, "Press \"Enter\" to return to Advanced Menu");
 			break;
 
 		case 3:
+			System.out.println("Opening SWapi Folder...");
+			 Desktop desktop = Desktop.getDesktop();
+		        File dirToOpen = null;
+		        try {
+		            dirToOpen = new File("SWapi");
+		            try {
+						desktop.open(dirToOpen);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        } catch (IllegalArgumentException iae) {
+		            System.out.println("File Not Found");
+		        }
+			endResult(false, 3, "Press \"Enter\" to return to Advanced Menu");
 			break;
-			
+		case 4:
+			if(Main.menuactions.app.thread.allow_thread == false) {
+				Main.menuactions.app.thread.allow_thread = true;
+				System.out.println("Threads Enabled");
+			}
+			else if(Main.menuactions.app.thread.allow_thread == true) {
+				Main.menuactions.app.thread.allow_thread = false;
+				System.out.println("Threads Disabled");
+			}
+			endResult(false, 3, "Press \"Enter\" to return to Advanced Menu");
+			break;
 		case 5:
+			if(Main.menuactions.app.enable_logs == false) {
+				Main.menuactions.app.enable_logs = true;
+				System.out.println("Logs Enabled");
+			}
+			else if(Main.menuactions.app.enable_logs == true) {
+				Main.menuactions.app.enable_logs = false;
+				System.out.println("Logs Disabled");
+			}
+			endResult(false, 3, "Press \"Enter\" to return to Advanced Menu");
+			break;
+		case 6:
 			clrscr();
 			console.menuDraw();
 			break;
@@ -192,7 +246,7 @@ public class MenuActions {
 		System.out.println(message);
 		Scanner scanner = new Scanner(System.in);
 		scanner.nextLine();
-		
+
 		if(menudraw == 1) {
 			console.menuDraw();
 		}
@@ -209,8 +263,8 @@ public class MenuActions {
 		System.exit(0);
 
 	}
-	
-	
+
+
 
 
 

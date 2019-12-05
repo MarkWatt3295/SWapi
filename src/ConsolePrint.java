@@ -20,7 +20,8 @@ public class ConsolePrint {
 
 	public void menuDraw(){
 		if(displayheader == false) {
-			Main.menuactions.clrscr();
+			MenuActions.clrscr();
+			
 		}
 
 		if(App.networkConnected == true) {
@@ -80,10 +81,13 @@ public class ConsolePrint {
 	}
 
 	public void printGuiChoice(){
-		Main.menuactions.clrscr();
+		if(Main.menuactions.app.initialised == false) {
+		Main.menuactions.app.initialiseApp();
+		Main.menuactions.app.initialised = true;
+		}
+		MenuActions.clrscr();
 		AsciiArt.asciiDraw();
-		Thread thread = new Thread();
-		thread.runTask1();
+		
 		Logger.appLog("SWapi started at : ");
 		System.out.println("\n==================================================================================\n");
 		System.out.println("What kind of GUI would you like to use?\n");
@@ -127,7 +131,7 @@ public class ConsolePrint {
 
 
 	public void advancedMenuDraw(){
-		Main.menuactions.clrscr();
+		MenuActions.clrscr();
 		if(App.networkConnected == true) {
 
 			AsciiArt.asciiDraw5();
@@ -135,11 +139,12 @@ public class ConsolePrint {
 			System.out.println("1 - Enable Debug Text (Console Debug)");
 			System.out.println("2 - Clear Character ArrayList");
 			System.out.println("3 - Open SWapi Resource Folder");
-			System.out.println("4 - Stop Threads");
-			System.out.println("5 - Return to Main Menu");
+			System.out.println("4 - Halt Threads [Running : "+Main.menuactions.app.thread.allow_thread +"]");
+			System.out.println("5 - Disable Logs [LogsEnabled : "+Main.menuactions.app.enable_logs + "]");
+			System.out.println("6 - Return to Main Menu");
 			System.out.println("");
 			System.out.println("==================================================================================");
-			menuStatus();
+			advancedMenuStatus();
 			System.out.println("==================================================================================\n");
 
 
@@ -167,8 +172,20 @@ public class ConsolePrint {
 
 	}
 
+	/**
+	 * A one line draw to create a status bar to quickly show variables
+	 */
 	public void menuStatus() {
-		System.out.println("[AppOnline : "+ App.networkConnected +"] | [DebugMode : "+App.debug_mode + "] | [DirectoryExists : "+App.directory_exists + "]");
+		System.out.println("       [AppOnline : "+ App.networkConnected +"] | [DebugMode : "+App.debug_mode + "] | [DirectoryExists : "+App.directory_exists + "]");
+	}
+	/**
+	 * A one line draw to create a status bar to quickly show advanced variables
+	 */
+	public void advancedMenuStatus() {
+		System.out.println("       [AppOnline : "+ App.networkConnected +"] | [DebugMode : "+App.debug_mode + "] | [DirectoryExists : "+App.directory_exists + "]");
+		System.out.println("       [HaltThreads : "+ Main.menuactions.app.thread.allow_thread +"] | [LogsEnabled : "+Main.menuactions.app.enable_logs + "] "
+				+ "");
+		
 	}
 	
 	public void continueSearch(HttpGet get) {
