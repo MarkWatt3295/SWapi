@@ -134,8 +134,8 @@ public class ConsolePrint {
 			System.out.println("\n==================================================================================\n");
 			System.out.println("1 - Enable Debug Text (Console Debug)");
 			System.out.println("2 - Clear Character ArrayList");
-			System.out.println("3 - ");
-			System.out.println("4 - ");
+			System.out.println("3 - Open SWapi Resource Folder");
+			System.out.println("4 - Stop Threads");
 			System.out.println("5 - Return to Main Menu");
 			System.out.println("");
 			System.out.println("==================================================================================");

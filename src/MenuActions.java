@@ -49,11 +49,12 @@ public class MenuActions {
 			break;
 
 		case 3:
-			System.out.println("\nList of all searched Characters : ["+app.People.size()+"]\n");
+			
 			if(app.People.size() == 0) {
 				System.err.println("You currently haven't searched for anyone.");
 			}
 			else {
+				System.out.println("\nList of all searched Characters : ["+app.People.size()+"]\n");
 				app.People.forEach(person -> {
 					person.personPrint();
 					System.out.println("\n");
