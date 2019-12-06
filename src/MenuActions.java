@@ -71,23 +71,20 @@ public class MenuActions {
 			break;
 		case 5:
 			int r;
-			System.out.println("Random Char");
+			System.out.println("The Force is selecting a Character for you...");
 
 			if(App.character_count > 0) {
 
 				r = App.getRandomNumberInRange(1, App.character_count);
-				
 				System.err.println("R is "+r);
 				app.swapiCharacterSearch(null, Integer.toString(r));
 			}
 			else {
-
-
 				r = App.getRandomNumberInRange(1, 87);
 				System.err.println("R is "+r);
 				app.swapiCharacterSearch(null, Integer.toString(r));
 			}
-
+			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
 			break;
 		case 9:
 			clrscr();

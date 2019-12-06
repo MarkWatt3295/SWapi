@@ -20,7 +20,7 @@ import com.google.gson.JsonObject;
 
 public class App {
 
-	public static boolean debug_mode = true;
+	public static boolean debug_mode = false;
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
 	public static int character_count = 0;
@@ -29,6 +29,7 @@ public class App {
 	public Thread thread = new Thread();
 	public boolean initialised = false;
 	public boolean enable_logs = true;
+	private boolean new_char = true;
 
 
 	private String temptype = "";
@@ -283,20 +284,43 @@ public class App {
 		if(arr.size() > 1) {
 			System.err.println("There are multiple results for this search.\n");
 		}
-		for (int i = 0; i < arr.size(); i++) {
+
+		for (int i = 0; i < arr.size(); i++) {	
+			new_char = true;
+			System.out.println("NEW CHAR IS "+new_char);
+
+			Person p = new Person();
+			Films f = new Films();
 			JsonObject result = arr.get(i).getAsJsonObject();
 			name = arr.get(i).getAsJsonObject().get("name").getAsString();
 			gender = arr.get(i).getAsJsonObject().get("gender").getAsString();
-			Person p = new Person();
-			Films f = new Films();
 			p.setName(name);
 			p.setGender(gender);
+			
 			if(App.networkConnected == false){  
 				System.err.println("ERRRRRRRROOOOOORRRR"); 
 				App.networkError();
 				break;
 			}
+			
+			duplicationCheck(p, result);
+		}
+	}
 
+	private void duplicationCheck(Person p , JsonObject result) {
+		Logger.appLog("[Display All Duplication Check]");
+		for(Person pp: People) {
+			if(pp.getName().equals(p.getName())) {
+				System.out.println("Not a new Character");
+				Logger.appLog(("SNAP! : "+p.getName()));
+				new_char = false;
+				pp.personPrint();
+
+			}
+		}
+
+		if(new_char == true) {
+			System.out.println("NEW CHAR IS "+new_char + " Doing full print");
 			JsonArray species = result.getAsJsonArray("species");
 			JsonArray films = result.getAsJsonArray("films");
 			printSubCall("name", species);
@@ -309,41 +333,36 @@ public class App {
 
 			});
 			Films.clear();
+
 			People.add(p);
 			p.personPrint();
 			System.out.println("\n");
 
 		}
 	}
-	
+		
+
+	/**
+	 * Call the Print for a single passed user. This is used when there isn't a results array
+	 * @param job - A json object
+	 */
 	public void displaySingle(JsonObject job) {
 
-			name = job.get("name").getAsString();
-			gender = job.getAsJsonObject().get("gender").getAsString();
-			Person p = new Person();
-			Films f = new Films();
-			p.setName(name);
-			p.setGender(gender);
-			
-			if(App.networkConnected == false){  
-				System.err.println("ERRRRRRRROOOOOORRRR"); 
-				App.networkError();
-			}
+		name = job.get("name").getAsString();
+		gender = job.getAsJsonObject().get("gender").getAsString();
+		
+		Person p = new Person();
+		Films f = new Films();
+		p.setName(name);
+		p.setGender(gender);
+		
+		duplicationCheck(p, job);
 
-			JsonArray species = job.getAsJsonArray("species");
-			JsonArray films = job.getAsJsonArray("films");
-			printSubCall("name", species);
-			p.setSpecies(temptype);
-			printSubCall("title", films);
+		if(App.networkConnected == false){  
+			System.err.println("ERRRRRRRROOOOOORRRR"); 
+			App.networkError();
+		}
 
-			Films.forEach(film -> {
-				p.addFilm(film);
-
-			});
-			Films.clear();
-			People.add(p);
-			p.personPrint();
-			System.out.println("\n");
 	}
 
 

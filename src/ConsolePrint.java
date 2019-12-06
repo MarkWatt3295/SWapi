@@ -65,7 +65,7 @@ public class ConsolePrint {
 					}
 				}
 				catch (InputMismatchException e) {
-					Main.menuactions.endResult(false, 1, "This is not the number you are looking for....\nEnter a number from the menu.\n");
+					Main.menuactions.endResult(false, 1, "This is not the number you are looking for....\nPress \"Enter\" to Try Again.\n");
 
 
 					//menuDraw();
