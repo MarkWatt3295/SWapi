@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -23,6 +24,7 @@ public class App {
 	public static boolean debug_mode = false;
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
+
 	public static int character_count = 0;
 	public String next_page = "null";
 	public boolean allow_next = true;
@@ -30,24 +32,39 @@ public class App {
 	public boolean initialised = false;
 	public boolean enable_logs = true;
 	private boolean new_char = true;
+	private boolean advanced_print = false;
 
 
 	private String temptype = "";
 
 	List<Person> People = new ArrayList<>();
 	List<Films> Films = new ArrayList<>();
+	List<Vehicles> Vehicles = new ArrayList<>();
 
 	private BufferedReader reader;
 	private HttpResponse response;
 	public JsonArray temp_array;
 	public boolean first_run = true;
 
-	String name = "Not Set";
-	String gender = "Not Set";
+	private String name = "";
+	private String gender = "";
+	private String height = "";
+	private String mass = "";
+	private String hair_color = "";
+	private String skin_color = "";
+	private String eye_color = "";
+	private String birth_year = "";
+	private String home_world = "";
 
 
 
+	public boolean isAdvanced_print() {
+		return advanced_print;
+	}
 
+	public void setAdvanced_print(boolean advanced_print) {
+		this.advanced_print = advanced_print;
+	}
 
 	/**
 	 * 
@@ -157,6 +174,13 @@ public class App {
 			Films.add(f);
 		}
 
+		else if(type == "vehicles") {
+			String name =  jsonObject.get("name").getAsString();
+			Vehicles v = new Vehicles();
+			v.setName(name);
+			Vehicles.add(v);
+		}
+
 		return jsonObject;
 	}
 
@@ -192,10 +216,12 @@ public class App {
 
 		if(jsonObject.toString().contains("results")) {
 			JsonArray arr = jsonObject.getAsJsonArray("results");
+			Main.menuactions.console.twoChoices();
 			displayAll(arr);
 		}
 		else {
 			Logger.appLog("[PersonRequest] : Doesn't contain an Array of Results\n");
+			Main.menuactions.console.twoChoices();
 			displaySingle(jsonObject);
 		}
 
@@ -287,60 +313,99 @@ public class App {
 
 		for (int i = 0; i < arr.size(); i++) {	
 			new_char = true;
-			System.out.println("NEW CHAR IS "+new_char);
+			//System.out.println("NEW CHAR IS "+new_char);
 
 			Person p = new Person();
 			Films f = new Films();
 			JsonObject result = arr.get(i).getAsJsonObject();
+
+			//System.out.println("Array is : "+arr.toString());
+
 			name = arr.get(i).getAsJsonObject().get("name").getAsString();
 			gender = arr.get(i).getAsJsonObject().get("gender").getAsString();
+			height = arr.get(i).getAsJsonObject().get("height").getAsString();
+			mass = arr.get(i).getAsJsonObject().get("mass").getAsString();
+			hair_color = arr.get(i).getAsJsonObject().get("hair_color").getAsString();
+			skin_color = arr.get(i).getAsJsonObject().get("skin_color").getAsString();
+			eye_color = arr.get(i).getAsJsonObject().get("eye_color").getAsString();
+			birth_year = arr.get(i).getAsJsonObject().get("birth_year").getAsString();
+			home_world = arr.get(i).getAsJsonObject().get("homeworld").getAsString();
+
+			
 			p.setName(name);
 			p.setGender(gender);
-			
+			p.setHeight(height);
+			p.setMass(mass);
+			p.setHair_color(hair_color);
+			p.setSkin_color(skin_color);
+			p.setEye_color(eye_color);
+			p.setBirthYear(birth_year);
+
+
 			if(App.networkConnected == false){  
 				System.err.println("ERRRRRRRROOOOOORRRR"); 
 				App.networkError();
 				break;
 			}
-			
+
 			duplicationCheck(p, result);
 		}
 	}
 
+	/**
+	 * duplicationCheck checks the person ArrayList to see if the person allready exists.
+	 * If the person exists the data is pulled from the ArrayList to save sending repeated
+	 * requests. If the person doesn't exist they are searched for normally.
+	 * @param p - The person to check
+	 * @param result - The JSON result
+	 */
 	private void duplicationCheck(Person p , JsonObject result) {
 		Logger.appLog("[Display All Duplication Check]");
+		
 		for(Person pp: People) {
 			if(pp.getName().equals(p.getName())) {
 				System.out.println("Not a new Character");
 				Logger.appLog(("SNAP! : "+p.getName()));
 				new_char = false;
-				pp.personPrint();
+				pp.personPrint(advanced_print);
 
 			}
 		}
 
 		if(new_char == true) {
-			System.out.println("NEW CHAR IS "+new_char + " Doing full print");
+			
+			System.out.println("New Character Detected\n");
 			JsonArray species = result.getAsJsonArray("species");
 			JsonArray films = result.getAsJsonArray("films");
+			JsonArray vehicles = result.getAsJsonArray("vehicles");
+			JsonArray starships = result.getAsJsonArray("starships");
+
+
 			printSubCall("name", species);
 			p.setSpecies(temptype);
-			printSubCall("title", films);
 
+			printSubCall("title", films);
 			Films.forEach(film -> {
-				//System.out.println(film.getTitle());
 				p.addFilm(film);
 
 			});
 			Films.clear();
 
+			printSubCall("name", vehicles);
+			Vehicles.forEach(vehicle -> {
+				p.addVehicles(vehicle);
+
+			});
+			Vehicles.clear();
+
+
 			People.add(p);
-			p.personPrint();
+			p.personPrint(advanced_print);
 			System.out.println("\n");
 
 		}
 	}
-		
+
 
 	/**
 	 * Call the Print for a single passed user. This is used when there isn't a results array
@@ -350,12 +415,12 @@ public class App {
 
 		name = job.get("name").getAsString();
 		gender = job.getAsJsonObject().get("gender").getAsString();
-		
+
 		Person p = new Person();
 		Films f = new Films();
 		p.setName(name);
 		p.setGender(gender);
-		
+
 		duplicationCheck(p, job);
 
 		if(App.networkConnected == false){  
@@ -424,7 +489,13 @@ public class App {
 	}
 
 
+	/**
+	 * The sub call is used to run a secondary search on uri's passed in.
+	 * @param entity
+	 * @param jsonArray
+	 */
 	public void printSubCall(String entity, JsonArray jsonArray)  {
+
 		Logger.appLog("[ SubPrint call ] Item : "+entity+"Array : "+jsonArray+" Array Size : "+jsonArray.size());
 
 		if (jsonArray.size() != 0) {
@@ -443,12 +514,11 @@ public class App {
 					try {
 						StraightSwapiSearch(uri, "species");
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
+
 						e.printStackTrace();
 					}
 
 				}
-
 				else if(uri.contains("films")){
 
 					//System.out.println("contains films");
@@ -459,9 +529,20 @@ public class App {
 						e.printStackTrace();
 					}
 				}
+
+				else if(uri.contains("vehicles")){
+
+					//System.out.println("contains films");
+					try {
+						StraightSwapiSearch(uri, "vehicles");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		} else {
-			System.out.println("Not in URI check - Only in One Movie");
+			System.out.println("Not in URI check");
 		}
 
 

@@ -183,7 +183,7 @@ public class ConsolePrint {
 	 */
 	public void advancedMenuStatus() {
 		System.out.println("       [AppOnline : "+ App.networkConnected +"] | [DebugMode : "+App.debug_mode + "] | [DirectoryExists : "+App.directory_exists + "]");
-		System.out.println("       [HaltThreads : "+ Main.menuactions.app.thread.allow_thread +"] | [LogsEnabled : "+Main.menuactions.app.enable_logs + "] "
+		System.out.println("       [ThreadsRunning : "+ Main.menuactions.app.thread.allow_thread +"] | [LogsEnabled : "+Main.menuactions.app.enable_logs + "] "
 				+ "");
 		
 	}
@@ -216,5 +216,27 @@ public class ConsolePrint {
 		}
 			
 		}
+	
+	
+	public void twoChoices() {
+		System.out.println("==================================================================================\n");
+		System.out.println("There are 2 options for viewing the Data.\n");
+		System.out.println("1 - Basic View");
+		System.out.println("2 - Advance View");
+		System.out.println("==================================================================================\n");
+		System.out.println("Choose a view from above and press \"Enter\"");
+		int number;
+		try {
+			Scanner choice = new Scanner(System.in);
+			number = choice.nextInt();
+			Main.menuactions.dataChooser(number);
+		}
+		catch (InputMismatchException e) {
+
+			System.err.println();
+			Main.menuactions.endResult(false, 2, "*Wave Hand* This is not the number you're looking for....\nEnter a number from the menu.\n\n\"Press Enter to Continue\"");
+			
+		}
+	}
 
 }

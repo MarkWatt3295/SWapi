@@ -11,6 +11,23 @@ public class MenuActions {
 	App app = new App();
 	ConsolePrint console = new ConsolePrint();
 
+	
+	
+	public void dataChooser(int command) {
+		
+		switch (command) {
+		case 1:
+			app.setAdvanced_print(false);
+			break;
+		case 2:
+			app.setAdvanced_print(true);
+			break;
+		default:
+			endResult(false, 4, command + " is not the dro.. number you're looking for.\nTry again.");
+			break;
+		}
+	}
+	
 	public void guiChooser(int command) {
 		switch (command) {
 		case 1:
@@ -58,7 +75,7 @@ public class MenuActions {
 			else {
 				System.out.println("\nList of all searched Characters : ["+app.People.size()+"]\n");
 				app.People.forEach(person -> {
-					person.personPrint();
+					person.personPrint(app.isAdvanced_print());
 					System.out.println("\n");
 				});
 			}
@@ -252,6 +269,9 @@ public class MenuActions {
 		}
 		else if(menudraw == 3) {
 			console.advancedMenuDraw();
+		}
+		else if(menudraw == 4) {
+			console.twoChoices();
 		}
 	}
 
