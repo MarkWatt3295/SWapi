@@ -51,7 +51,7 @@ public class MenuActions {
 
 		switch (command) {
 		case 1:
-			app.AllCharacters();
+			app.swapiCharacterSearch(null, null, "ping");;
 			System.out.println("==================================================================================\n");
 			System.out.println("All Characters Loaded\n");
 			System.out.println("==================================================================================\n");
@@ -63,7 +63,8 @@ public class MenuActions {
 			Scanner input = new Scanner(System.in);
 			character_text = input.nextLine();
 			checkString(character_text);
-			app.swapiCharacterSearch(character_text, null);
+			console.twoChoices();
+			app.swapiCharacterSearch(character_text, null, "search_by_name");
 			endResult(false, 1, "Press \"ENTER\" to continue...");
 			break;
 
@@ -94,12 +95,12 @@ public class MenuActions {
 
 				r = App.getRandomNumberInRange(1, App.character_count);
 				System.err.println("R is "+r);
-				app.swapiCharacterSearch(null, Integer.toString(r));
+				app.swapiCharacterSearch(null, Integer.toString(r), "search_by_number");
 			}
 			else {
 				r = App.getRandomNumberInRange(1, 87);
 				System.err.println("R is "+r);
-				app.swapiCharacterSearch(null, Integer.toString(r));
+				app.swapiCharacterSearch(null, Integer.toString(r), "search_by_number");
 			}
 			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
 			break;
@@ -260,6 +261,7 @@ public class MenuActions {
 		System.out.println(message);
 		Scanner scanner = new Scanner(System.in);
 		scanner.nextLine();
+		scanner.close();
 
 		if(menudraw == 1) {
 			console.menuDraw();

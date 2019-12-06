@@ -8,6 +8,12 @@ public class ArrayListTable {
 	public  List<String> row1 = new ArrayList<>();
 	public  List<String> row2 = new ArrayList<>();
 	public  List<String> row3 = new ArrayList<>();
+	public  List<String> row4 = new ArrayList<>();
+	public  List<String> row5 = new ArrayList<>();
+	public  List<String> row6 = new ArrayList<>();
+	public  List<String> row7 = new ArrayList<>();
+	public  List<String> row8 = new ArrayList<>();
+	public  List<String> row9 = new ArrayList<>();
 	
 	private static List<List<String>> table;
 
@@ -18,6 +24,22 @@ public class ArrayListTable {
 		row3.add(0,"Species");
 		
 		table = Arrays.asList(row0, row1, row2, row3);
+		printTable(spacing);
+	}
+	
+	public void buildAdvancedTable(int spacing) {
+		row0.add(0,"Number");
+		row1.add(0,"Name");
+		row2.add(0,"Gender");
+		row3.add(0,"Species");
+		row4.add(0,"Height");
+		row5.add(0,"Mass");
+		row6.add(0,"Hair Colour");
+		row7.add(0,"Skin Colour");
+		row8.add(0,"Eye Colour");
+		row9.add(0,"Birth Year");
+		
+		table = Arrays.asList(row0, row1, row2, row3, row4, row5, row6, row7, row8, row9);
 		printTable(spacing);
 	}
 

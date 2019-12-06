@@ -66,9 +66,7 @@ public class ConsolePrint {
 				}
 				catch (InputMismatchException e) {
 					Main.menuactions.endResult(false, 1, "This is not the number you are looking for....\nPress \"Enter\" to Try Again.\n");
-
-
-					//menuDraw();
+//menuDraw();
 				}
 			}
 			else {
@@ -189,6 +187,7 @@ public class ConsolePrint {
 	}
 	
 	public void continueSearch(HttpGet get) {
+		
 		if(App.character_count > 0 ) {
 		System.out.println("\nThere are : "+App.character_count + " character results.\n\nDo you want to display them all ?\n"
 				+ "(This will take a while!)");
@@ -200,7 +199,7 @@ public class ConsolePrint {
 		if(answer.equals("y") || answer.equals("Y")) {
 			
 			try {
-				Main.menuactions.app.countedRequest(get);
+				Main.menuactions.app.personRequest(get, "counted_request", null);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

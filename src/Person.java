@@ -40,6 +40,10 @@ public class Person {
 			Vehicles.forEach(vehicles -> {
 				all_vehicles = all_vehicles + " | "+ vehicles.getName();
 			});
+			
+			if(all_vehicles == "") {
+				all_vehicles = " None";
+			}
 			System.out.println("----------------------------------------------");
 			System.out.println("  C H A R A C T E R   I N F O R M A T I O N");
 			System.out.println("----------------------------------------------\n");

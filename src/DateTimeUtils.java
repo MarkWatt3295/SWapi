@@ -2,7 +2,12 @@
 
 import java.util.Date;
 
-
+/**
+ * This Class was taken from a previous program of mine.
+ * 
+ * @author Mark
+ *
+ */
 public class DateTimeUtils {
     private static final long ONE_HOUR_IN_MS = 3600000;
     private static final long ONE_MIN_IN_MS = 60000;
@@ -54,7 +59,13 @@ public class DateTimeUtils {
 		    "%d days, %d hours, %d minutes, %d seconds%n", 
 		    elapsedDays,
 		    elapsedHours, elapsedMinutes, elapsedSeconds);
-		
+		/*
+		AppWindow.appinit.setDays(elapsedDays);
+		AppWindow.appinit.setHours(elapsedHours);
+		AppWindow.appinit.setMinutes(elapsedMinutes);
+		AppWindow.appinit.setSeconds(elapsedSeconds);
+		AppWindow.appinit.setTotal_RUNTIME( elapsedDays+" Days, " +elapsedHours+" Hours, "+elapsedMinutes+" Minutes, "+elapsedSeconds+" Seconds");
+		*/
 	
 	}
 	

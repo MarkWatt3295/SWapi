@@ -21,7 +21,7 @@ import com.google.gson.JsonObject;
 
 public class App {
 
-	public static boolean debug_mode = false;
+	public static boolean debug_mode = true;
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
 
@@ -68,123 +68,85 @@ public class App {
 
 	/**
 	 * 
-	 * @param searchquery - (specifically named e.g Luke)
+	 * @param searchquery - When using command (search by name). The parameter is a name to
+	 * to search for. E.g (Luke, Anakin etc).
+	 * @param searchnumber - Enter a number when searching for a person number
+	 * @param command - Command names {@link swapiCharacterSearch}
+	 */
+	public void swapiCharacterSearch(String searchquery, String searchnumber, String command)  {
+
+		HttpGet httpGet = null;
+
+		switch (command) {
+
+		case "search_by_name":
+			httpGet = new HttpGet("https://swapi.co/api/people/?search=" + searchquery);
+			try {
+				personRequest(httpGet, "display", null);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+
+		case "search_by_number":
+			httpGet = new HttpGet("https://swapi.co/api/people/" + searchnumber);
+			try {
+				personRequest(httpGet, "display", null);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+
+		case "ping":
+			httpGet = new HttpGet("https://swapi.co/api/people");
+			try {
+				personRequest(httpGet, "ping", null);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		default:
+			System.out.println(command + " is not a available command");
+			break;
+		}
+
+	}
+
+
+
+
+
+
+	public void swapiSearch(String uri, String type) {
+		HttpGet httpGet = new HttpGet(uri);
+		Logger.appLog("[ StraightSwapiSearch ] The straight get is : "+httpGet); 
+
+		try {
+			personRequest(httpGet, "swapi_response", type);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+	//BUILDER
+	/**
+	 * 
+	 * @param getRequest
+	 * @param command
+	 * @param type
 	 * @return
 	 * @throws Exception
 	 */
-	public void swapiCharacterSearch(String searchquery, String searchnumber)  {
-
-		HttpGet httpGet;
-
-		if(searchnumber == null) {
-			httpGet = new HttpGet("https://swapi.co/api/people/?search=" + searchquery);
-		}
-		else {
-			httpGet = new HttpGet("https://swapi.co/api/people/" + searchnumber);
-			System.err.println("Searhcing by number using : "+httpGet.getURI());
-		}
+	public JsonObject personRequest(HttpGet getRequest, String command, String type) throws Exception {
+		System.err.println("PUNCH IT CHEWIE! : "+getRequest + " " + command + " " + type);
 		System.out.println("\nParsing Midi-chlorians, This may take a second...\n");
-
-		Logger.appLog("[SWapiCharachterSearch] Get is : "+httpGet);
-
-		try {
-			personRequest(httpGet);
-		}
-		catch (IllegalArgumentException e) {
-			System.err.println("Unable to search for : "+searchquery+" as it contains an illegal character.\nPlease try again.");
-			e.printStackTrace();
-
-		}  
-		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	public void AllCharacters()  {
-
-		HttpGet httpGet = new HttpGet("https://swapi.co/api/people");
-		System.out.println("\nParsing Midi-chlorians, This may take a second...\n");
-
-		Logger.appLog("[AllCharacters] Get is : "+httpGet);
-
-		try {
-			requestAll(httpGet);
-		}
-		catch (IllegalArgumentException e) {
-
-			e.printStackTrace();
-
-		}  
-		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-
-	public void StraightSwapiSearch(String uri, String type) {
-		HttpGet httpGet = new HttpGet(uri);
-		Logger.appLog("[ StraightSwapiSearch ] The straight get is : "+httpGet); 
-		try {
-			httpRequest(httpGet, type);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-
-	public JsonObject httpRequest(HttpGet getRequest, String type) throws IOException {
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		Logger.appLog("[HttpRequest] : "+ getRequest + " "+type);
-		getRequest.addHeader("accept", "application/json");
-		HttpResponse response = httpClient.execute(getRequest);
-
-
-		if (response.getStatusLine().getStatusCode() != 200) {
-			errorCode(response);
-			throw new RuntimeException("Failed : HTTP error code : "
-					+ response.getStatusLine().getStatusCode());
-		}
-
-		reader = new BufferedReader(
-				new InputStreamReader((response.getEntity().getContent())));
-
-		String line;
-		StringBuilder stringBuilder = new StringBuilder();
-		while ((line = reader.readLine()) != null) {
-			stringBuilder.append(line);
-			Logger.appLog(line);
-		}
-
-		JsonObject jsonObject = deserialize(stringBuilder.toString());
-
-		if(type == "species") {
-			String name =  jsonObject.get("name").getAsString();
-			temptype = name;
-		}
-		else if(type == "films") {
-			String title =  jsonObject.get("title").getAsString();
-			Films f = new Films();
-			f.setTitle(title);
-			Films.add(f);
-		}
-
-		else if(type == "vehicles") {
-			String name =  jsonObject.get("name").getAsString();
-			Vehicles v = new Vehicles();
-			v.setName(name);
-			Vehicles.add(v);
-		}
-
-		return jsonObject;
-	}
-
-	public JsonObject personRequest(HttpGet getRequest) throws Exception {
 
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		getRequest.addHeader("accept", "application/json");
@@ -201,6 +163,8 @@ public class App {
 
 		}
 
+
+
 		reader = new BufferedReader(
 				new InputStreamReader((response.getEntity().getContent())));
 
@@ -208,90 +172,91 @@ public class App {
 		StringBuilder stringBuilder = new StringBuilder();
 		while ((line = reader.readLine()) != null) {
 			stringBuilder.append(line);
-			Logger.appLog("[PersonRequest-SB]"+line);
+			Logger.appLog("[PersonRequest-SB-line]"+line);
 		}
 
 		JsonObject jsonObject = deserialize(stringBuilder.toString());
-		Logger.appLog("[PersonRequest jsonObject] : "+jsonObject.toString()+"\n");
 
+		boolean is_an_array = false;
+		JsonArray arr = null;
 		if(jsonObject.toString().contains("results")) {
-			JsonArray arr = jsonObject.getAsJsonArray("results");
-			Main.menuactions.console.twoChoices();
-			displayAll(arr);
+			System.out.println("Contains an Array of Results\n");
+			arr = jsonObject.getAsJsonArray("results");
+			is_an_array = true;
 		}
 		else {
-			Logger.appLog("[PersonRequest] : Doesn't contain an Array of Results\n");
-			Main.menuactions.console.twoChoices();
-			displaySingle(jsonObject);
+			System.out.println("Doesn't contain an Array of Results\n");
+			is_an_array = false;
+		}
+
+
+		switch (command) {
+		case "display":
+			if(is_an_array == true) {
+				displayAll(arr);
+			}
+			else if (is_an_array == false) {
+				displaySingle(jsonObject);
+			}
+			is_an_array = false;
+			break;
+
+
+		case "ping":
+			JsonElement count = jsonObject.get("count");
+			System.out.println("COUNT IS : "+count);
+			JsonElement next = jsonObject.get("next");
+			Logger.appLog("THE NEXT PAGE TO SEARCH IS : "+next);
+			next_page = getRequest.getURI().toString();
+			character_count= count.getAsInt();
+			if(character_count > 0) {
+				Main.menuactions.console.continueSearch(getRequest);
+			}
+			break;
+
+		case "counted_request":
+			String getty = getRequest.getURI().toString();
+			while(allow_next != false) {
+				getRequest = new HttpGet(next_page);
+				Logger.appLog("Actual get is : "+getRequest);
+
+				JsonElement nextcount = jsonObject.get("next");
+				String s = "";
+				displayAll(arr);
+				try{
+					s = nextcount.getAsString();
+					next_page = s;
+				}
+				catch(UnsupportedOperationException e) {
+					break;
+				}
+			}
+			break;
+		case "swapi_response":
+			if(type == "species") {
+				String name =  jsonObject.get("name").getAsString();
+				temptype = name;
+			}
+			else if(type == "films") {
+				String title =  jsonObject.get("title").getAsString();
+				Films f = new Films();
+				f.setTitle(title);
+				Films.add(f);
+			}
+
+			else if(type == "vehicles") {
+				String name =  jsonObject.get("name").getAsString();
+				Vehicles v = new Vehicles();
+				v.setName(name);
+				Vehicles.add(v);
+			}
+
 		}
 
 		reader.close();
 		return jsonObject;
 	}
 
-	/**
-	 * A starwars related http error catch
-	 * @param response
-	 */
-	private void errorCode(HttpResponse response) {
-		AsciiArt.errorDraw("HTTP ERROR : "+response.getStatusLine().getStatusCode());
-		if(response.getStatusLine().getStatusCode() == 503) {
-			System.out.println("Let me do the talking Chewie...");
-		}
-		else if(response.getStatusLine().getStatusCode() == 500) {
-			System.out.println("I've got a bad feeling about this Chewie...");
-		}
-		else if(response.getStatusLine().getStatusCode() == 504) {
-			System.out.println("I've got a bad feeling about this Chewie...");
-		}
-		else if(response.getStatusLine().getStatusCode() == 403) {
-			System.out.println("I don't think we're supposed to be here Chewie.");
-		}
-		else {
-			System.out.println("Blast it Chewie! We didn't account for this");
-		}
-		Main.menuactions.console.menuDraw();
-		System.out.println("==================================================================================");
-
-	}
-
-	public void requestAll(HttpGet getRequest) throws Exception {
-
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		getRequest.addHeader("accept", "application/json");
-		HttpResponse response = httpClient.execute(getRequest);
-
-		if (response.getStatusLine().getStatusCode() != 200) {
-			errorCode(response);
-			throw new RuntimeException("Failed : HTTP error code : "
-					+ response.getStatusLine().getStatusCode());
-		}
-
-		reader = new BufferedReader(
-				new InputStreamReader((response.getEntity().getContent())));
-
-		String line;
-		StringBuilder stringBuilder = new StringBuilder();
-		while ((line = reader.readLine()) != null) {
-			stringBuilder.append(line);
-			Logger.appLog("[RequestAll-StringBuilder] : "+line);
-		}
-
-		JsonObject jsonObject = deserialize(stringBuilder.toString());
-		JsonElement count = jsonObject.get("count");
-		Logger.appLog("COUNT IS : "+count);
-		JsonElement next = jsonObject.get("next");
-		Logger.appLog("THE NEXT PAGE TO SEARCH IS : "+next);
-		next_page = getRequest.getURI().toString();
-
-		character_count= count.getAsInt();
-
-		temp_array = jsonObject.getAsJsonArray("results");
-		reader.close();
-		if(character_count > 0) {
-			Main.menuactions.console.continueSearch(getRequest);
-		}
-	}
 
 
 
@@ -331,7 +296,7 @@ public class App {
 			birth_year = arr.get(i).getAsJsonObject().get("birth_year").getAsString();
 			home_world = arr.get(i).getAsJsonObject().get("homeworld").getAsString();
 
-			
+
 			p.setName(name);
 			p.setGender(gender);
 			p.setHeight(height);
@@ -361,7 +326,7 @@ public class App {
 	 */
 	private void duplicationCheck(Person p , JsonObject result) {
 		Logger.appLog("[Display All Duplication Check]");
-		
+
 		for(Person pp: People) {
 			if(pp.getName().equals(p.getName())) {
 				System.out.println("Not a new Character");
@@ -373,7 +338,7 @@ public class App {
 		}
 
 		if(new_char == true) {
-			
+
 			System.out.println("New Character Detected\n");
 			JsonArray species = result.getAsJsonArray("species");
 			JsonArray films = result.getAsJsonArray("films");
@@ -431,54 +396,7 @@ public class App {
 	}
 
 
-	public void countedRequest(HttpGet getRequest) throws Exception {
 
-		String getty = getRequest.getURI().toString();
-		Logger.appLog(getty +  " : getty - Requested URI");
-
-		int i = 0;
-		while(allow_next != false) {
-			i++;
-			getRequest = new HttpGet(next_page);
-			Logger.appLog("Actual get is : "+getRequest);
-
-			HttpClient httpClient = HttpClientBuilder.create().build();
-			getRequest.addHeader("accept", "application/json");
-			HttpResponse response = httpClient.execute(getRequest);
-
-			if (response.getStatusLine().getStatusCode() != 200) {
-				errorCode(response);
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ response.getStatusLine().getStatusCode());
-			}
-
-			reader = new BufferedReader(
-					new InputStreamReader((response.getEntity().getContent())));
-
-			String line;
-			StringBuilder stringBuilder = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				stringBuilder.append(line);
-				Logger.appLog("[countedRequest-SB] : "+line);
-			}
-
-			JsonObject jsonObject = deserialize(stringBuilder.toString());
-			JsonArray arr = jsonObject.getAsJsonArray("results");
-			JsonElement next = jsonObject.get("next");
-			String s = "";
-			displayAll(arr);
-			try{
-				s = next.getAsString();
-				next_page = s;
-			}
-			catch(UnsupportedOperationException e) {
-				break;
-			}
-
-
-			reader.close();
-		}
-	}
 
 
 
@@ -512,7 +430,7 @@ public class App {
 
 				if(uri.contains("species")){
 					try {
-						StraightSwapiSearch(uri, "species");
+						swapiSearch(uri, "species");
 					} catch (Exception e) {
 
 						e.printStackTrace();
@@ -523,7 +441,7 @@ public class App {
 
 					//System.out.println("contains films");
 					try {
-						StraightSwapiSearch(uri, "films");
+						swapiSearch(uri, "films");
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -534,7 +452,7 @@ public class App {
 
 					//System.out.println("contains films");
 					try {
-						StraightSwapiSearch(uri, "vehicles");
+						swapiSearch(uri, "vehicles");
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -542,7 +460,7 @@ public class App {
 				}
 			}
 		} else {
-			System.out.println("Not in URI check");
+			//System.out.println("Finished uri check");
 		}
 
 
@@ -622,6 +540,32 @@ public class App {
 	public void initialiseApp() {
 		thread.runTask1();
 		Logger.appLog("SWapi started at : ");
+	}
+
+	/**
+	 * A starwars related http error catch
+	 * @param response
+	 */
+	private void errorCode(HttpResponse response) {
+		AsciiArt.errorDraw("HTTP ERROR : "+response.getStatusLine().getStatusCode());
+		if(response.getStatusLine().getStatusCode() == 503) {
+			System.out.println("Let me do the talking Chewie...");
+		}
+		else if(response.getStatusLine().getStatusCode() == 500) {
+			System.out.println("I've got a bad feeling about this Chewie...");
+		}
+		else if(response.getStatusLine().getStatusCode() == 504) {
+			System.out.println("I've got a bad feeling about this Chewie...");
+		}
+		else if(response.getStatusLine().getStatusCode() == 403) {
+			System.out.println("I don't think we're supposed to be here Chewie.");
+		}
+		else {
+			System.out.println("Blast it Chewie! We didn't account for this");
+		}
+		Main.menuactions.console.menuDraw();
+		System.out.println("==================================================================================");
+
 	}
 
 }
