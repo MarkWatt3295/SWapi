@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -215,6 +214,7 @@ public class App {
 			break;
 
 		case "counted_request":
+			Main.menuactions.console.twoChoices();
 			String getty = getRequest.getURI().toString();
 			while(allow_next != false) {
 				getRequest = new HttpGet(next_page);
@@ -281,7 +281,6 @@ public class App {
 			//System.out.println("NEW CHAR IS "+new_char);
 
 			Person p = new Person();
-			Films f = new Films();
 			JsonObject result = arr.get(i).getAsJsonObject();
 
 			//System.out.println("Array is : "+arr.toString());
@@ -378,13 +377,31 @@ public class App {
 	 */
 	public void displaySingle(JsonObject job) {
 
-		name = job.get("name").getAsString();
-		gender = job.getAsJsonObject().get("gender").getAsString();
-
+		
 		Person p = new Person();
 		Films f = new Films();
+		
+		name = job.getAsJsonObject().get("name").getAsString();
+		gender = job.getAsJsonObject().get("gender").getAsString();
+		height = job.getAsJsonObject().get("height").getAsString();
+		mass = job.getAsJsonObject().get("mass").getAsString();
+		hair_color = job.getAsJsonObject().get("hair_color").getAsString();
+		skin_color = job.getAsJsonObject().get("skin_color").getAsString();
+		eye_color = job.getAsJsonObject().get("eye_color").getAsString();
+		birth_year = job.getAsJsonObject().get("birth_year").getAsString();
+		home_world = job.getAsJsonObject().get("homeworld").getAsString();
+
+
 		p.setName(name);
 		p.setGender(gender);
+		p.setHeight(height);
+		p.setMass(mass);
+		p.setHair_color(hair_color);
+		p.setSkin_color(skin_color);
+		p.setEye_color(eye_color);
+		p.setBirthYear(birth_year);
+
+
 
 		duplicationCheck(p, job);
 

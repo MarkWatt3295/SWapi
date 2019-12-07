@@ -5,16 +5,18 @@ import java.util.Scanner;
 
 import org.apache.http.client.methods.HttpGet;
 
+import gui.AppWindow;
+
 public class MenuActions {
 
 	private String character_text;
 	App app = new App();
 	ConsolePrint console = new ConsolePrint();
 
-	
-	
+
+
 	public void dataChooser(int command) {
-		
+
 		switch (command) {
 		case 1:
 			app.setAdvanced_print(false);
@@ -27,7 +29,22 @@ public class MenuActions {
 			break;
 		}
 	}
-	
+
+	public void advancedTableChoice(int command) {
+
+		switch (command) {
+		case 1:
+			console.arraylistTable();
+			break;
+		case 2:
+			console.advancedArraylistTable();
+			break;
+		default:
+			endResult(false, 4, command + " is not the dro.. number you're looking for.\nTry again.");
+			break;
+		}
+	}
+
 	public void guiChooser(int command) {
 		switch (command) {
 		case 1:
@@ -35,13 +52,14 @@ public class MenuActions {
 			console.menuDraw();
 			break;
 		case 2:
+			AppWindow.main(null);
+			
 			break;
 		case 3:
 			exitApp();
 			break;
 
 		default:
-
 			endResult(false, 2, command + " is not the dro.. number you're looking for.\nTry again.");
 			break;
 		}
@@ -84,8 +102,9 @@ public class MenuActions {
 			break;
 
 		case 4:
-			console.arraylistTable();
-			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
+			console.drawAdvancedTable();
+			endResult(false, 1, "Press Enter to Continue\"");
+			
 			break;
 		case 5:
 			int r;
@@ -157,19 +176,19 @@ public class MenuActions {
 
 		case 3:
 			System.out.println("Opening SWapi Folder...");
-			 Desktop desktop = Desktop.getDesktop();
-		        File dirToOpen = null;
-		        try {
-		            dirToOpen = new File("SWapi");
-		            try {
-						desktop.open(dirToOpen);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		        } catch (IllegalArgumentException iae) {
-		            System.out.println("File Not Found");
-		        }
+			Desktop desktop = Desktop.getDesktop();
+			File dirToOpen = null;
+			try {
+				dirToOpen = new File("SWapi");
+				try {
+					desktop.open(dirToOpen);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (IllegalArgumentException iae) {
+				System.out.println("File Not Found");
+			}
 			endResult(false, 3, "Press \"Enter\" to return to Advanced Menu");
 			break;
 		case 4:
@@ -261,7 +280,6 @@ public class MenuActions {
 		System.out.println(message);
 		Scanner scanner = new Scanner(System.in);
 		scanner.nextLine();
-		scanner.close();
 
 		if(menudraw == 1) {
 			console.menuDraw();
@@ -275,6 +293,7 @@ public class MenuActions {
 		else if(menudraw == 4) {
 			console.twoChoices();
 		}
+
 	}
 
 	private void exitApp() {

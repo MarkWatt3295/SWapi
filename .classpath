@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="C:/Users/Mark/git/SWapi/jars/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Mark/git/SWapi/jars/httpclient-4.5.6.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Mark/git/SWapi/jars/httpcore-4.4.10.jar"/>
+	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

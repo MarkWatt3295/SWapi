@@ -14,7 +14,7 @@ public class ConsolePrint {
 
 	private boolean displayheader = true;
 
-	public Scanner input = new Scanner(System.in);
+	
 
 
 
@@ -41,7 +41,7 @@ public class ConsolePrint {
 			System.out.println("5 - Random Character Info");
 			System.out.println("6 - Planet Search");
 			System.out.println("7 - Ship Search");
-			System.out.println("8 - Star Wars F.O.T.D");
+			System.out.println("8 - Star Wars F.O.T.D (Not Implemented)");
 			System.out.println("9 - About");
 			System.out.println("");
 			System.out.println("10 - Exit");
@@ -126,6 +126,30 @@ public class ConsolePrint {
 		System.out.println("-----------------------------------------------------------------------------");
 
 	}
+	
+	public void advancedArraylistTable() {
+		
+		System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------");
+		ArrayListTable aat = new ArrayListTable();
+		int i = 1;
+		for(Person person: 	Main.menuactions.app.People){
+			String j = Integer.toString(i);
+			aat.row0.add(j);
+			aat.row1.add(person.getName());
+			aat.row2.add(person.getGender());
+			aat.row3.add(person.getSpecies());
+			aat.row4.add(person.getHeight());
+			aat.row5.add(person.getMass());
+			aat.row6.add(person.getHair_color());
+			aat.row7.add(person.getSkin_color());
+			aat.row8.add(person.getEye_color());
+			aat.row9.add(person.getBirthYear());
+			i++;
+		}
+		aat.buildAdvancedTable(5);
+		System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------");
+	}
+
 
 
 	public void advancedMenuDraw(){
@@ -233,7 +257,29 @@ public class ConsolePrint {
 		catch (InputMismatchException e) {
 
 			System.err.println();
-			Main.menuactions.endResult(false, 2, "*Wave Hand* This is not the number you're looking for....\nEnter a number from the menu.\n\n\"Press Enter to Continue\"");
+			Main.menuactions.endResult(false, 4, "Theres 2 choices. You chose none of them....\nEnter a number from the menu.\n\n\"Press Enter to Continue\"");
+			
+		}
+	}
+	
+	
+	public void drawAdvancedTable() {
+		System.out.println("==================================================================================\n");
+		System.out.println("There are 2 options for Table viewing.\n");
+		System.out.println("1 - Basic Table");
+		System.out.println("2 - Advanced Table");
+		System.out.println("==================================================================================\n");
+		System.out.println("Choose a view from above and press \"Enter\"");
+		int number;
+		try {
+			Scanner choice = new Scanner(System.in);
+			number = choice.nextInt();
+			Main.menuactions.advancedTableChoice(number);
+		}
+		catch (InputMismatchException e) {
+
+			System.err.println();
+			Main.menuactions.endResult(false, 4, "Theres 2 choices. You chose none of them....\nEnter a number from the menu.\n\n\"Press Enter to Continue\"");
 			
 		}
 	}
