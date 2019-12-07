@@ -1,3 +1,4 @@
+package console;
 
 public class AsciiArt {
 	

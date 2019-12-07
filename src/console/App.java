@@ -1,3 +1,4 @@
+package console;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import com.google.gson.JsonObject;
 
 public class App {
 
+	public boolean using_gui = false;
 	public static boolean debug_mode = true;
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
@@ -80,6 +82,7 @@ public class App {
 
 		case "search_by_name":
 			httpGet = new HttpGet("https://swapi.co/api/people/?search=" + searchquery);
+			
 			try {
 				personRequest(httpGet, "display", null);
 			} catch (Exception e) {

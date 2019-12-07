@@ -1,16 +1,15 @@
+package console;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
-
-import org.apache.http.client.methods.HttpGet;
 
 import gui.AppWindow;
 
 public class MenuActions {
 
 	private String character_text;
-	App app = new App();
+	public App app = new App();
 	ConsolePrint console = new ConsolePrint();
 
 
@@ -52,6 +51,8 @@ public class MenuActions {
 			console.menuDraw();
 			break;
 		case 2:
+		
+			app.using_gui = true;
 			AppWindow.main(null);
 			
 			break;
@@ -65,6 +66,10 @@ public class MenuActions {
 		}
 	}
 
+	/**
+	 * Use th
+	 * @param command
+	 */
 	public void menuChoice(int command) {
 
 		switch (command) {

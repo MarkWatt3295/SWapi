@@ -1,3 +1,4 @@
+package console;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -8,11 +9,13 @@ public class Main {
 	public static MenuActions menuactions = new MenuActions();
 	
 	public static void main(String[] args) {
-		menuactions.app.createDir();
 		StartUpCheck();
 	}
 
-	private static void StartUpCheck() {
+	public static void StartUpCheck() {
+		
+		menuactions.app.createDir();
+		
 		try {
 			URL url = new URL("https://swapi.co/");
 			URLConnection connection = url.openConnection();
