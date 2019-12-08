@@ -6,12 +6,19 @@ import java.util.Scanner;
 
 import gui.AppWindow;
 
+/**
+ * This class is used to control what happens with passed data and
+ * what the different menus should do.
+ * @author Mark
+ *
+ */
 public class MenuActions {
 
 	private String character_text; //String used to store the searched character
 	private String planet_search, ship_search, vehicle_search; //String to hold searchterms
+	
 	public App app = new App();
-	ConsolePrint console = new ConsolePrint();
+	public ConsolePrint console = new ConsolePrint();
 
 
 
@@ -88,10 +95,12 @@ public class MenuActions {
 
 		switch (command) {
 		case 1:
+			App.disable_midis = true; //Disable midi print out (as it spans console)
 			app.swapiCharacterSearch(null, null, "ping");;
 			System.out.println("==================================================================================\n");
 			System.out.println("All Characters Loaded\n");
 			System.out.println("==================================================================================\n");
+			App.disable_midis = false; //Enable midi print out
 			endResult(false, 1, "Press \"ENTER\" to continue...");
 			break;
 
@@ -133,12 +142,12 @@ public class MenuActions {
 			if(App.character_count > 0) {
 
 				r = App.getRandomNumberInRange(1, App.character_count);
-				System.err.println("R is "+r);
+				Logger.appLog("Random number is is "+r);
 				app.swapiCharacterSearch(null, Integer.toString(r), "search_by_number");
 			}
 			else {
 				r = App.getRandomNumberInRange(1, 87);
-				System.err.println("R is "+r);
+				Logger.appLog("Random number is is "+r);
 				app.swapiCharacterSearch(null, Integer.toString(r), "search_by_number");
 			}
 			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
@@ -148,24 +157,24 @@ public class MenuActions {
 			System.out.println("Enter a Planet to search for");
 			Scanner planet_input = new Scanner(System.in);
 			planet_search = planet_input.nextLine();
-			checkString(planet_search);
-			app.swapiCharacterSearch(planet_search, null, "planet_search");
+			String planet = checkString(planet_search);
+			app.swapiCharacterSearch(planet, null, "planet_search");
 			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
 			break;
 		case 7:
-			System.out.println("Enter a Ship to search for");
+			System.out.println("Enter a Spaceship to search for");
 			Scanner ship_input = new Scanner(System.in);
 			ship_search = ship_input.nextLine();
-			checkString(ship_search);
-			app.swapiCharacterSearch(ship_search, null, "ship_search");
+			String ship = checkString(ship_search);
+			app.swapiCharacterSearch(ship, null, "ship_search");
 			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
 			break;
 		case 8:
 			System.out.println("Enter a Vehicle to search for");
 			Scanner vehicle_input = new Scanner(System.in);
 			vehicle_search = vehicle_input.nextLine();
-			checkString(ship_search);
-			app.swapiCharacterSearch(vehicle_search, null, "vehicle_search");
+			String vehicle = checkString(vehicle_search);
+			app.swapiCharacterSearch(vehicle, null, "vehicle_search");
 			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
 			break;
 		case 9:
@@ -303,42 +312,45 @@ public class MenuActions {
 	 * @return - Returns the about text.
 	 */
 	public String aboutText(boolean print) {
-		String text = "Along time ago, In a Galaxy Far, Far away....\n\n"
+		String text = "                    A B O U T   S W A P I   J A V A \n"
+				+"==================================================================================\n"
+				+"Along time ago, In a Galaxy Far, Far away....\n\n"
 				
 				+ "I was tasked with creating a program to interact with the Star Wars API."
 				+ "\nThis Java program is my implementation of this.\n"
 				+ "\nI have created a working Console Applicationthat allows a user to search for various\n"
-				+ "things in the Star Wars Universe using the Star Wars API and entering commands into the\n"
-				+ "console app. In addition to this I have also made a Swing GUI that allows the user to\n"
-				+ "enter searches graphically.\n\n\n"
+				+ "things in the Star Wars Universe using the Star Wars API and entering commands into\nthe"
+				+ "console app. In addition to this I have also made a Swing GUI that allows the\n"
+				+ "user to enter searches graphically.\n\n\n"
+				+ "This application was written by Mark Watt \n\n"
 				+"==================================================================================\n"
-				+"                          T H E   C O N S O L E   A P P \n"
+				+"                       T H E   C O N S O L E   A P P \n"
 				+"==================================================================================\n"
 				+ "The Console app allows the user to enter a series of commands by using printed\n"
 				+ "menus (e.g. press 1 and hit Enter). The user can list all Characters in the API,\n"
 				+ "Search for individual characters by name and also search Vehicles, Planets and\n"
 				+ "Spaceships by name.\n\n"
 				+"==================================================================================\n"
-				+"                             T H E   G U I    A P P \n"
+				+"                           T H E   G U I    A P P \n"
 				+"==================================================================================\n"
 				+ "The GUI offers the same functionality (minus displaying all characters) but with\n"
 				+ "a graphical user interfce. The user can press buttons to interact with what they\n"
 				+ "want.\n\n"
 				+"==================================================================================\n"
-				+"                             P L A N N E D   F E A T U R E S \n"
+				+"                         P L A N N E D   F E A T U R E S \n"
 				+"==================================================================================\n"
 				+ "I have thouroughly enjoyed working on this little project. I have a lot of ideas\n"
 				+ "and plans which I will continue working on.\n"
 				+ "This is the first API I have properly interacted with and found it very intuative.\n"
-				+ "Once I get to a stage in the app where I have made everything I have wanted I think"
-				+ "I will try and improve on the API interaction in another language.\n"
-				+ "I was unable to get everything I wanted\n"
-				+ "done due to time limitations. Here are a couple of those features.\n"
+				+ "Once I get to a stage in the app where I have made everything I have wanted,\n"
+				+ "I think I will try and improve on the API interaction in another programming\nlanguage."
+				+ "I was unable to get everything I wanted done due to time limitations.\n"
+				+ "Here are a couple of Features I plan to add as I further develop SWapi Java.\n"
 				
 				+ "\n\n"
 				+ "FUTURE FEATURES : \n\n"
 				+ "- Refactor spaghetti Code."
-				+ "- Combine object (Ships and Vehicles). Vehicles should inherit Ships.\n\n"
+				+ "- Combine object (Ships and Vehicles).\nVehicles should inherit Ships.\n\n"
 				+ "- Improve search checks."
 				+ "\n  Currently only a characer search is checked.\n"
 				+ "  When a user enters a character to search for, or character data is recieved\n"
@@ -357,7 +369,7 @@ public class MenuActions {
 				+ "- Edit and ammend data (to fix spellings and capitalisations in swapi data).\n"
 				+ "- GUI debug tools\n"
 				+ "- Scaleable GUI\n"
-				+ "- Wookie Encoding\n"
+				+ "- Wookie Encoding\n\n"
 				+ "- [BUG] - Ctrl + Z kills Scanner read in Console app\n"
 				+ "- [BUG] - Random character search fails to display on certain numbers\n"
 				+ "- [BUG] - GUI text area not clearing text as expected\n"
@@ -365,12 +377,18 @@ public class MenuActions {
 				+"==================================================================================\n"
 				+"                          C O P Y R I G H T   N O T I C E \n"
 				+"==================================================================================\n"
-				+ "I am not associated or affiliated with Star Wars or SWapi.\n"
-				+ "SWapi is a free open source API available at : https://swapi.co/"
+				+ "I am not associated or affiliated with Star Wars or SWapi.\n\n"
+				+ "SWapi is a free open source API available at : https://swapi.co"
 				+ "\n\nStar Wars and all associated names and references are copyright Lucasfilmltd\n\n"
-				+ "The icons used in the GUI are copyright free and can be found at : https://www.flaticon.com\n"
-				+ "T\nhe background used in the GUI dashboard is a copyright free background\n"
-				+ "available at : https://wallpaperaccess.com/star-wars";
+				+ "The icons used in the GUI are copyright free and can be found at :\nhttps://www.flaticon.com\n"
+				+ "\nhe background used in the GUI dashboard is a copyright free background\n"
+				+ "available at : https://wallpaperaccess.com/star-wars\n"
+				+"==================================================================================\n"
+				+"                          S O U R C E    C O D E \n"
+				+"==================================================================================\n"
+				+ "The Source code for this App can be found on my personal GitHub. You can grab it\n"
+				+ "at : https://github.com/MarkWatt3295/SWapi/"
+				;
 		if(print == true) {
 			System.out.println(text);
 		}
@@ -384,13 +402,13 @@ public class MenuActions {
 	 * They also return better responses.
 	 * @param text
 	 */
-	private void checkString(String text) {
+	private String checkString(String text) {
 		Logger.appLog("[checkString] Search Query before : "+text);
 		text = text.replaceAll("[^a-zA-Z0-9]"," ");
 		Logger.appLog("[checkString] Search Query After Replace : "+text);
 		text = text.replaceAll(" ","+");
 		Logger.appLog("[checkString] Search Query After Replace 2: "+text);
-		character_text = text;
+		return text;
 	}
 
 	/**
