@@ -42,6 +42,7 @@ public class GuiController {
 
 	public String searchCommand; //The command to pass to search panel switch
 	public String fullprint = ""; //Holds texpane print
+	public String vehicle_print = "" ;//Hold textpane of vehicle prints
 
 	public MenuActions menuactions = new MenuActions();
 
@@ -240,10 +241,7 @@ public class GuiController {
 
 				else if(button == panel_search.btn_random_character) {
 					System.out.println("Random Character button pressed");
-
 					randomConfirmation();
-
-
 				}
 			}
 
@@ -273,14 +271,14 @@ public class GuiController {
 				r = App.getRandomNumberInRange(1, App.character_count);
 				System.err.println("R is "+r);
 				menuactions.app.swapiCharacterSearch(null, Integer.toString(r), "search_by_number");
-				textDraw();
+				characterDraw();
 				resetSearchToggles();
 			}
 			else {
 				r = App.getRandomNumberInRange(1, 87);
 				System.err.println("R is "+r);
 				menuactions.app.swapiCharacterSearch(null, Integer.toString(r), "search_by_number");
-				textDraw();
+				characterDraw();
 				resetSearchToggles();
 			}
 
@@ -327,9 +325,21 @@ public class GuiController {
 									fullprint = "";
 									panel_search.textArea.revalidate();
 									try {
-									menuactions.app.swapiCharacterSearch(s, null, "search_by_name");
-									
-									textDraw();
+										menuactions.app.swapiCharacterSearch(s, null, "search_by_name");
+										characterDraw();
+									}catch(IllegalArgumentException e1) {
+										GuiController.yodaDialog("Invalid search, Try again you must");
+										searchClear();
+									}
+									break;
+
+								case "Vehicle Search":
+									vehicle_print = "";
+									panel_search.textArea.revalidate();
+									menuactions.app.Vehicles.clear(); //Clear the Array
+									try {
+										menuactions.app.swapiCharacterSearch(s, null, "vehicle_search");
+										vehicleDraw();
 									}catch(IllegalArgumentException e1) {
 										GuiController.yodaDialog("Invalid search, Try again you must");
 										searchClear();
@@ -373,19 +383,23 @@ public class GuiController {
 				panel_search.textArea.replaceSelection("");
 				panel_search.textArea.repaint();
 				panel_search.textArea.revalidate();
-				
+
 			}
 
 
 		});
 	}
-	private void textDraw() {
+
+	/**
+	 * Create a print out that will be returned to display a Character
+	 */
+	private void characterDraw() {
 		menuactions.app.People.forEach(person -> {
 
 			//person.extraInfo();
 			fullprint = fullprint 
 					+"\n-------------------------------------------------------\n"
-					+"  C H A R A C T E R   I N F O R M A T I O N\n"+
+					+"    C H A R A C T E R   I N F O R M A T I O N\n"+
 					"-------------------------------------------------------\n"
 					+"\nName : "+person.getName()
 					+"\nGender : "+person.getGender()
@@ -402,12 +416,39 @@ public class GuiController {
 					+"-------------------------------------------------------\n";
 
 
-
+			
 		});
 		panel_search.textArea.setText(fullprint);
 		panel_search.textArea.repaint();
 		panel_search.textArea.revalidate();
 
+	}
+
+	private void vehicleDraw() {
+		menuactions.app.Vehicles.forEach(vehicle -> {
+
+			vehicle_print = vehicle_print 
+					+"\n-------------------------------------------------------\n"
+					+"          V E H I C L E   I N F O R M A T I O N\n"
+					+"-------------------------------------------------------\n"
+					+"Name    : "+vehicle.getName()
+					+"\nModel   : "+vehicle.getModel()
+					+"\nManufacturer : "+vehicle.getManufacturer()
+					+"\nCost in Credits : "+vehicle.getCost_in_credits()
+					+"\nLength : "+vehicle.getLength()
+					+"\nMax Atmosphering Speed : "+vehicle.getMax_atmosphering_speed()
+					+"\nCrew : "+vehicle.getCrew()
+					+"\nPassengers : "+vehicle.getPassengers()
+					+"\nCargo Capacity : "+vehicle.getCargo_capacity()
+					+"\nConsumables : "+vehicle.getConsumables()
+					+"\nVehicle Class : "+vehicle.getVehicle_class()
+					+"\n-------------------------------------------------------\n";
+
+		});
+		menuactions.app.Vehicles.clear(); //Clear the Array
+		panel_search.textArea.setText(vehicle_print);
+		panel_search.textArea.repaint();
+		panel_search.textArea.revalidate();
 	}
 
 	/**
@@ -480,7 +521,7 @@ public class GuiController {
 			public void actionPerformed(ActionEvent e) {
 				if(button == panel_display.btn_table) {
 					if(App.tableShow == false) {
-					TableArray.createWindow(menuactions.app.People);
+						TableArray.createWindow(menuactions.app.People);
 					}
 					else {
 						TableArray.dialog.show();
@@ -494,9 +535,12 @@ public class GuiController {
 
 	/**
 	 * A quick method to set all toggle buttons back to false
+	 * Also sets search command to null to stop buttons firing commands
+	 * (if they where pressed before random)
 	 * {@link }
 	 */
 	public void resetSearchToggles() {
+		searchCommand = null;
 		toggle.forEach(button -> {
 			button.setSelected(false);
 			button.repaint();
@@ -533,8 +577,8 @@ public class GuiController {
 			return null;
 		}
 	}
-	
-	
+
+
 	public static void networkCheck() {
 
 
