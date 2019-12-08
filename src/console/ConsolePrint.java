@@ -1,15 +1,8 @@
 package console;
-import java.io.IOException;
-import java.net.http.HttpRequest;
-import java.util.Arrays;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 import org.apache.http.client.methods.HttpGet;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 public class ConsolePrint {
 
@@ -37,16 +30,17 @@ public class ConsolePrint {
 			System.out.println("\n==================================================================================\n");
 			System.out.println("1 - All Characters");
 			System.out.println("2 - Search Character");
-			System.out.println("3 - View Search History");
-			System.out.println("4 - View Search History (Tabular)");
+			System.out.println("3 - View Character Search History");
+			System.out.println("4 - View Character Search History (Tabular)");
 			System.out.println("5 - Random Character Info");
 			System.out.println("6 - Planet Search");
 			System.out.println("7 - Ship Search");
-			System.out.println("8 - Star Wars F.O.T.D (Not Implemented)");
-			System.out.println("9 - About");
+			System.out.println("8 - Vehicle Search");
+			System.out.println("9 - Star Wars F.O.T.D (Not Implemented)");
+			System.out.println("10 - About");
 			System.out.println("");
-			System.out.println("10 - Exit");
-			System.out.println("11 - Advanced Menu");
+			System.out.println("11 - Exit");
+			System.out.println("12 - Advanced Menu");
 			System.out.println("");
 			System.out.println("==================================================================================");
 			menuStatus();

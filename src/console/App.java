@@ -31,7 +31,8 @@ public class App {
 	public static boolean tableShow = false;
 	public static boolean networkErrorShow = false; //Used to set if the Network error pops up in GUI
 	public static boolean using_gui = false; //Is the App in GUI mode
-	public static boolean debug_mode = false; //Enable and disable debug mode (Console prints)
+	public static boolean debug_mode = true;
+			; //Enable and disable debug mode (Console prints)
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
 
@@ -51,6 +52,8 @@ public class App {
 	public List<Films> Films = new ArrayList<>();
 	public List<Vehicles> Vehicles = new ArrayList<>();
 	public List<Planets> Planets = new ArrayList<>();
+	public List<Spaceship> Spaceship = new ArrayList<>();
+
 
 	private BufferedReader reader;
 	private HttpResponse response;
@@ -122,13 +125,35 @@ public class App {
 			}
 			break;
 		case "planet_search":
-			httpGet = new HttpGet("https://swapi.co/api/planets/");
+			httpGet = new HttpGet("https://swapi.co/api/planets/?search=" + searchquery);
 			try {
 				personRequest(httpGet, "displayplanets", null);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}break;
+			}
+			break;
+
+		case "ship_search":
+			httpGet = new HttpGet("https://swapi.co/api/starships/?search=" + searchquery);
+			try {
+				personRequest(httpGet, "displayships", null);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+			
+		case "vehicle_search":
+			httpGet = new HttpGet("https://swapi.co/api/vehicles/?search=" + searchquery);
+			try {
+				personRequest(httpGet, "display_vehicles", null);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+
 
 		default:
 			System.out.println(command + " is not a available command");
@@ -167,7 +192,7 @@ public class App {
 	 * @throws Exception
 	 */
 	public JsonObject personRequest(HttpGet getRequest, String command, String type) throws Exception {
-		System.err.println("PUNCH IT CHEWIE! : "+getRequest + " " + command + " " + type);
+		Logger.appLog("PUNCH IT CHEWIE! : "+getRequest + " " + command + " " + type);
 		System.out.println("\nParsing Midi-chlorians, This may take a second...\n");
 
 		HttpClient httpClient = HttpClientBuilder.create().build();
@@ -203,7 +228,7 @@ public class App {
 		boolean is_an_array = false;
 		JsonArray arr = null;
 		if(jsonObject.toString().contains("results")) {
-			System.out.println("Contains an Array of Results\n");
+			Logger.appLog("Contains an Array of Results\n");
 			arr = jsonObject.getAsJsonArray("results");
 			is_an_array = true;
 		}
@@ -221,16 +246,22 @@ public class App {
 			else if (is_an_array == false) {
 				displaySingle(jsonObject);
 			}
-			is_an_array = false;
+			
 			break;
 		case "displayplanets":
 			displayPlanets(arr);
 			break;
 
+		case "displayships":
+			displayShips(arr);
+			break;
+		case "display_vehicles":
+			displayVehicles(arr);
+			break;
 
 		case "ping":
 			JsonElement count = jsonObject.get("count");
-			System.out.println("COUNT IS : "+count);
+			Logger.appLog("COUNT IS : "+count);
 			JsonElement next = jsonObject.get("next");
 			Logger.appLog("THE NEXT PAGE TO SEARCH IS : "+next);
 			next_page = getRequest.getURI().toString();
@@ -241,9 +272,12 @@ public class App {
 			break;
 
 		case "counted_request":
-			Main.menuactions.console.twoChoices();
+			System.err.println("New Request is now : "+next_page);
+			//Main.menuactions.console.twoChoices();
 			String getty = getRequest.getURI().toString();
+			System.out.println("Getty is : "+getty);
 			while(allow_next != false) {
+				System.err.println("Next page is : "+next_page);
 				getRequest = new HttpGet(next_page);
 				Logger.appLog("Actual get is : "+getRequest);
 
@@ -253,10 +287,15 @@ public class App {
 				try{
 					s = nextcount.getAsString();
 					next_page = s;
+					System.out.println("S IS : "+s);
+					HttpGet newReq = new HttpGet(next_page);
+					Main.menuactions.app.personRequest(newReq, "counted_request", null);
 				}
 				catch(UnsupportedOperationException e) {
-					break;
+					Logger.appLog("Bounced out of while as no Json left : "+e.getLocalizedMessage());
+					allow_next = false;
 				}
+				
 			}
 			break;
 		case "swapi_response":
@@ -266,15 +305,25 @@ public class App {
 			}
 			else if(type == "films") {
 				String title =  jsonObject.get("title").getAsString();
+				String id =  jsonObject.get("episode_id").getAsString();
+				String opening_crawl =  jsonObject.get("opening_crawl").getAsString();
+				String release_date = jsonObject.get("release_date").getAsString();
 				Films f = new Films();
 				f.setTitle(title);
+				f.setEpisodeId(id);
+				f.setOpeningCrawl(opening_crawl);
+				f.setRelease_date(release_date);
 				Films.add(f);
 			}
 
 			else if(type == "vehicles") {
 				String name =  jsonObject.get("name").getAsString();
+				String model =  jsonObject.get("model").getAsString();
+				String manufacturer =  jsonObject.get("manufacturer").getAsString();
 				Vehicles v = new Vehicles();
 				v.setName(name);
+				v.setModel(model);
+				v.setManufacturer(manufacturer);
 				Vehicles.add(v);
 			}
 			else if(type == "planets") {
@@ -312,6 +361,9 @@ public class App {
 
 		if(arr.size() > 1) {
 			System.err.println("There are multiple results for this search.\n");
+			if(App.using_gui == true) {
+				GuiController.mDialog("c3po.png", "There are multiple results for this search. It may take a second", "Multiple Results for this search");
+			}
 		}
 
 		for (int i = 0; i < arr.size(); i++) {	
@@ -382,8 +434,6 @@ public class App {
 			JsonArray vehicles = result.getAsJsonArray("vehicles");
 			JsonArray starships = result.getAsJsonArray("starships");
 
-
-
 			printSubCall("name", species);
 			p.setSpecies(temptype);
 
@@ -425,14 +475,17 @@ public class App {
 
 		if(arr.size() > 1) {
 			System.err.println("There are multiple results for this search.\n");
+			if(App.using_gui == true) {
+				GuiController.mDialog("c3po.png", "There are multiple results for this search. It may take a second", "Multiple Results for this search");
+			}
 		}
 
 		for (int i = 0; i < arr.size(); i++) {	
-			
+
 			Planets p = new Planets();
 			JsonObject result = arr.get(i).getAsJsonObject();
 
-			System.out.println("Array is : "+arr.toString());
+			Logger.appLog("Planets Array is : "+arr.toString());
 
 			String name = arr.get(i).getAsJsonObject().get("name").getAsString();
 			String rotationPeriod = arr.get(i).getAsJsonObject().get("rotation_period").getAsString();
@@ -467,6 +520,140 @@ public class App {
 
 		}
 	}
+
+
+	public void displayShips(JsonArray arr) {
+		System.err.println("VEHICLES ARRAY IS : "+arr.toString());
+		if(arr.size() != 0) {
+			Logger.appLog("Total Search Results per page : "+arr.size()+"\n");
+		}
+		if(arr.size() == 0) {
+			System.out.println("\n==================================================================================");
+			System.out.println("Mmm... No results are there. Try again you will.");
+			System.out.println("==================================================================================\n");
+			if(App.using_gui == true) {
+				GuiController.yodaDialog("Mmm... No results are there. Try again you will.");
+			}
+		}
+
+		if(arr.size() > 1) {
+			System.err.println("There are multiple results for this search.\n");
+			if(App.using_gui == true) {
+				GuiController.mDialog("c3po.png", "There are multiple results for this search. It may take a second", "Multiple Results for this search");
+			}
+		}
+
+		for (int i = 0; i < arr.size(); i++) {	
+
+			Spaceship ship = new Spaceship();
+			JsonObject result = arr.get(i).getAsJsonObject();
+			Logger.appLog("Spaceship Array is : "+arr.toString());
+			String name = arr.get(i).getAsJsonObject().get("name").getAsString();
+			String model = arr.get(i).getAsJsonObject().get("model").getAsString();
+			String manufacturer = arr.get(i).getAsJsonObject().get("manufacturer").getAsString();
+			String cost_in_credits = arr.get(i).getAsJsonObject().get("cost_in_credits").getAsString();
+			String length = arr.get(i).getAsJsonObject().get("length").getAsString();
+			String max_atmosphering_speed = arr.get(i).getAsJsonObject().get("max_atmosphering_speed").getAsString();
+			String crew = arr.get(i).getAsJsonObject().get("crew").getAsString();
+			String passengers = arr.get(i).getAsJsonObject().get("crew").getAsString();
+			String cargo_capactity = arr.get(i).getAsJsonObject().get("cargo_capacity").getAsString();
+			String consumables = arr.get(i).getAsJsonObject().get("consumables").getAsString();
+			String hyperdrive_rating = arr.get(i).getAsJsonObject().get("hyperdrive_rating").getAsString();
+			String mglt = arr.get(i).getAsJsonObject().get("MGLT").getAsString();
+			String starship_class = arr.get(i).getAsJsonObject().get("starship_class").getAsString();
+
+			ship.setName(name);
+			ship.setModel(model);
+			ship.setManufacturer(manufacturer);
+			ship.setCost_in_credits(cost_in_credits);
+			ship.setLength(length);
+			ship.setMax_atmosphering_speed(max_atmosphering_speed);
+			ship.setCrew(crew);
+			ship.setPassengers(passengers);
+			ship.setCargo_capactity(cargo_capactity);
+			ship.setConsumables(consumables);
+			ship.setHyperdrive_rating(hyperdrive_rating);
+			ship.setMglt(mglt);
+			ship.setStarship_class(starship_class);
+
+
+			Spaceship.add(ship);
+			ship.planetsPrint();
+
+			if(App.networkConnected == false){  
+				System.err.println("ERRRRRRRROOOOOORRRR"); 
+				App.networkError();
+				break;
+			}
+
+
+		}
+	}
+	
+	
+	public void displayVehicles(JsonArray arr) {
+		
+		if(arr.size() != 0) {
+			Logger.appLog("Total Search Results per page : "+arr.size()+"\n");
+		}
+		if(arr.size() == 0) {
+			System.out.println("\n==================================================================================");
+			System.out.println("Mmm... No results are there. Try again you will.");
+			System.out.println("==================================================================================\n");
+			if(App.using_gui == true) {
+				GuiController.yodaDialog("Mmm... No results are there. Try again you will.");
+			}
+		}
+
+		if(arr.size() > 1) {
+			System.err.println("There are multiple results for this search.\n");
+			if(App.using_gui == true) {
+				GuiController.mDialog("c3po.png", "There are multiple results for this search. It may take a second", "Multiple Results for this search");
+			}
+		}
+
+		for (int i = 0; i < arr.size(); i++) {	
+
+			Vehicles vehicle = new Vehicles();
+			JsonObject result = arr.get(i).getAsJsonObject();
+			Logger.appLog("Spaceship Array is : "+arr.toString());
+			String name = arr.get(i).getAsJsonObject().get("name").getAsString();
+			String model = arr.get(i).getAsJsonObject().get("model").getAsString();
+			String manufacturer = arr.get(i).getAsJsonObject().get("manufacturer").getAsString();
+			String cost_in_credits = arr.get(i).getAsJsonObject().get("cost_in_credits").getAsString();
+			String length = arr.get(i).getAsJsonObject().get("length").getAsString();
+			String max_atmosphering_speed = arr.get(i).getAsJsonObject().get("max_atmosphering_speed").getAsString();
+			String crew = arr.get(i).getAsJsonObject().get("crew").getAsString();
+			String passengers = arr.get(i).getAsJsonObject().get("crew").getAsString();
+			String cargo_capactity = arr.get(i).getAsJsonObject().get("cargo_capacity").getAsString();
+			String consumables = arr.get(i).getAsJsonObject().get("consumables").getAsString();
+			String vehicle_class = arr.get(i).getAsJsonObject().get("vehicle_class").getAsString();
+
+			vehicle.setName(name);
+			vehicle.setModel(model);
+			vehicle.setManufacturer(manufacturer);
+			vehicle.setCost_in_credits(cost_in_credits);
+			vehicle.setLength(length);
+			vehicle.setMax_atmosphering_speed(max_atmosphering_speed);
+			vehicle.setCrew(crew);
+			vehicle.setPassengers(passengers);
+			vehicle.setCargo_capacity(cargo_capactity);
+			vehicle.setConsumables(consumables);
+			vehicle.setVehicle_class(vehicle_class);
+
+			Vehicles.add(vehicle);
+			vehicle.vehiclePrint();
+			if(App.networkConnected == false){  
+				System.err.println("ERRRRRRRROOOOOORRRR"); 
+				App.networkError();
+				break;
+			}
+
+
+		}
+	}
+
+
 
 
 	/**
@@ -697,18 +884,33 @@ public class App {
 		AsciiArt.errorDraw("HTTP ERROR : "+response.getStatusLine().getStatusCode());
 		if(response.getStatusLine().getStatusCode() == 503) {
 			System.out.println("Let me do the talking Chewie...");
+			if(App.using_gui == true) {
+				GuiController.yodaDialog("Error 503 you have. Your fault, it is not.");
+			}
 		}
 		else if(response.getStatusLine().getStatusCode() == 500) {
 			System.out.println("I've got a bad feeling about this Chewie...");
+			if(App.using_gui == true) {
+				GuiController.yodaDialog("Error 500 you have. Your fault, it is not.");
+			}
 		}
 		else if(response.getStatusLine().getStatusCode() == 504) {
 			System.out.println("I've got a bad feeling about this Chewie...");
+			if(App.using_gui == true) {
+				GuiController.yodaDialog("Error 504 you have. Gateway Timeout it seems.");
+			}
 		}
 		else if(response.getStatusLine().getStatusCode() == 403) {
 			System.out.println("I don't think we're supposed to be here Chewie.");
+			if(App.using_gui == true) {
+				GuiController.yodaDialog("Error 403 you have. The Forbidden Darkside have you gone.");
+			}
 		}
 		else {
 			System.out.println("Blast it Chewie! We didn't account for this");
+			if(App.using_gui == true) {
+				GuiController.yodaDialog("Http Error you have. Fix it you must.");
+			}
 		}
 		Main.menuactions.console.menuDraw();
 		System.out.println("==================================================================================");

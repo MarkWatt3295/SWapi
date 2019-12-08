@@ -1,14 +1,11 @@
 package console;
-import java.util.List;
 
 public class Films {
 
     private String title;
 
   
-    private int episodeId;
-
- 
+    private String episodeId;
     private String openingCrawl;
 
     private String director;
@@ -17,16 +14,20 @@ public class Films {
     private String url;
     private String created;
     private String edited;
+    
+    
 	public String getTitle() {
 		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public int getEpisodeId() {
+	
+	
+	public String getEpisodeId() {
 		return episodeId;
 	}
-	public void setEpisodeId(int episodeId) {
+	public void setEpisodeId(String episodeId) {
 		this.episodeId = episodeId;
 	}
 	public String getOpeningCrawl() {

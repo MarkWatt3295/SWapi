@@ -1,159 +1,222 @@
-Thread 1 Ran at : 08/12/19 02:40:15
-AppOnline = true, Running again at : 08/12/19 02:40:16
+Thread 1 Ran at : 08/12/19 17:52:58
+AppOnline = true, Running again at : 08/12/19 17:52:59
 
-Thread 1 Ran at : 08/12/19 02:40:16
-AppOnline = true, Running again at : 08/12/19 02:40:17
+Thread 1 Ran at : 08/12/19 17:52:58
+AppOnline = true, Running again at : 08/12/19 17:52:59
 
-Thread 1 Ran at : 08/12/19 02:40:17
-AppOnline = true, Running again at : 08/12/19 02:40:18
+Thread 1 Ran at : 08/12/19 17:52:59
+AppOnline = true, Running again at : 08/12/19 17:53:00
 
-Thread 1 Ran at : 08/12/19 02:40:18
-AppOnline = true, Running again at : 08/12/19 02:40:19
+Thread 1 Ran at : 08/12/19 17:52:59
+AppOnline = true, Running again at : 08/12/19 17:53:00
 
-Thread 1 Ran at : 08/12/19 02:40:19
-AppOnline = true, Running again at : 08/12/19 02:40:20
+Thread 1 Ran at : 08/12/19 17:53:00
+AppOnline = true, Running again at : 08/12/19 17:53:01
 
-Thread 1 Ran at : 08/12/19 02:40:20
-AppOnline = true, Running again at : 08/12/19 02:40:21
+Thread 1 Ran at : 08/12/19 17:53:00
+AppOnline = true, Running again at : 08/12/19 17:53:01
 
-Thread 1 Ran at : 08/12/19 02:40:21
-AppOnline = true, Running again at : 08/12/19 02:40:22
+Thread 1 Ran at : 08/12/19 17:53:01
+AppOnline = true, Running again at : 08/12/19 17:53:02
 
-Thread 1 Ran at : 08/12/19 02:40:22
-AppOnline = true, Running again at : 08/12/19 02:40:23
+Thread 1 Ran at : 08/12/19 17:53:01
+AppOnline = true, Running again at : 08/12/19 17:53:02
 
-Thread 1 Ran at : 08/12/19 02:40:23
-AppOnline = true, Running again at : 08/12/19 02:40:24
+Thread 1 Ran at : 08/12/19 17:53:02
+AppOnline = true, Running again at : 08/12/19 17:53:03
 
-Thread 1 Ran at : 08/12/19 02:40:24
-AppOnline = true, Running again at : 08/12/19 02:40:25
+Thread 1 Ran at : 08/12/19 17:53:02
+AppOnline = true, Running again at : 08/12/19 17:53:03
 
-Thread 1 Ran at : 08/12/19 02:40:25
-AppOnline = true, Running again at : 08/12/19 02:40:26
+Thread 1 Ran at : 08/12/19 17:53:03
+AppOnline = true, Running again at : 08/12/19 17:53:04
 
-Thread 1 Ran at : 08/12/19 02:40:26
-AppOnline = true, Running again at : 08/12/19 02:40:27
+Thread 1 Ran at : 08/12/19 17:53:03
+AppOnline = true, Running again at : 08/12/19 17:53:04
 
-Thread 1 Ran at : 08/12/19 02:40:27
-AppOnline = true, Running again at : 08/12/19 02:40:28
+Thread 1 Ran at : 08/12/19 17:53:04
+AppOnline = true, Running again at : 08/12/19 17:53:05
 
-Thread 1 Ran at : 08/12/19 02:40:28
-AppOnline = true, Running again at : 08/12/19 02:40:29
+Thread 1 Ran at : 08/12/19 17:53:04
+AppOnline = true, Running again at : 08/12/19 17:53:05
 
-Thread 1 Ran at : 08/12/19 02:40:29
-AppOnline = true, Running again at : 08/12/19 02:40:30
+Thread 1 Ran at : 08/12/19 17:53:05
+AppOnline = true, Running again at : 08/12/19 17:53:06
 
-Thread 1 Ran at : 08/12/19 02:40:30
-AppOnline = true, Running again at : 08/12/19 02:40:31
+Thread 1 Ran at : 08/12/19 17:53:05
+AppOnline = true, Running again at : 08/12/19 17:53:06
 
-Thread 1 Ran at : 08/12/19 02:40:31
-AppOnline = true, Running again at : 08/12/19 02:40:32
+Thread 1 Ran at : 08/12/19 17:53:06
+AppOnline = true, Running again at : 08/12/19 17:53:07
 
-Thread 1 Ran at : 08/12/19 02:40:32
-AppOnline = true, Running again at : 08/12/19 02:40:33
+Thread 1 Ran at : 08/12/19 17:53:06
+AppOnline = true, Running again at : 08/12/19 17:53:07
 
-Thread 1 Ran at : 08/12/19 02:40:33
-AppOnline = true, Running again at : 08/12/19 02:40:34
+Thread 1 Ran at : 08/12/19 17:53:07
+AppOnline = true, Running again at : 08/12/19 17:53:08
 
-Thread 1 Ran at : 08/12/19 02:40:34
-AppOnline = true, Running again at : 08/12/19 02:40:35
+Thread 1 Ran at : 08/12/19 17:53:07
+AppOnline = true, Running again at : 08/12/19 17:53:08
 
-Thread 1 Ran at : 08/12/19 02:40:35
-AppOnline = true, Running again at : 08/12/19 02:40:36
+Thread 1 Ran at : 08/12/19 17:53:08
+AppOnline = true, Running again at : 08/12/19 17:53:09
 
-Thread 1 Ran at : 08/12/19 02:40:36
-AppOnline = true, Running again at : 08/12/19 02:40:37
+Thread 1 Ran at : 08/12/19 17:53:08
+AppOnline = true, Running again at : 08/12/19 17:53:09
 
-Thread 1 Ran at : 08/12/19 02:40:37
-AppOnline = true, Running again at : 08/12/19 02:40:38
+Thread 1 Ran at : 08/12/19 17:53:09
+AppOnline = true, Running again at : 08/12/19 17:53:10
 
-Thread 1 Ran at : 08/12/19 02:40:38
-AppOnline = true, Running again at : 08/12/19 02:40:39
+Thread 1 Ran at : 08/12/19 17:53:09
+AppOnline = true, Running again at : 08/12/19 17:53:10
 
-Thread 1 Ran at : 08/12/19 02:40:39
-AppOnline = true, Running again at : 08/12/19 02:40:40
+Thread 1 Ran at : 08/12/19 17:53:10
+AppOnline = true, Running again at : 08/12/19 17:53:11
 
-Thread 1 Ran at : 08/12/19 02:40:40
-AppOnline = true, Running again at : 08/12/19 02:40:41
+Thread 1 Ran at : 08/12/19 17:53:10
+AppOnline = true, Running again at : 08/12/19 17:53:11
 
-Thread 1 Ran at : 08/12/19 02:40:41
-AppOnline = true, Running again at : 08/12/19 02:40:42
+Thread 1 Ran at : 08/12/19 17:53:11
+AppOnline = true, Running again at : 08/12/19 17:53:12
 
-Thread 1 Ran at : 08/12/19 02:40:42
-AppOnline = true, Running again at : 08/12/19 02:40:43
+Thread 1 Ran at : 08/12/19 17:53:11
+AppOnline = true, Running again at : 08/12/19 17:53:12
 
-Thread 1 Ran at : 08/12/19 02:40:43
-AppOnline = true, Running again at : 08/12/19 02:40:44
+Thread 1 Ran at : 08/12/19 17:53:12
+AppOnline = true, Running again at : 08/12/19 17:53:13
 
-Thread 1 Ran at : 08/12/19 02:40:44
-AppOnline = true, Running again at : 08/12/19 02:40:45
+Thread 1 Ran at : 08/12/19 17:53:12
+AppOnline = true, Running again at : 08/12/19 17:53:13
 
-Thread 1 Ran at : 08/12/19 02:40:45
-AppOnline = true, Running again at : 08/12/19 02:40:46
+Thread 1 Ran at : 08/12/19 17:53:13
+AppOnline = true, Running again at : 08/12/19 17:53:14
 
-Thread 1 Ran at : 08/12/19 02:40:46
-AppOnline = true, Running again at : 08/12/19 02:40:47
+Thread 1 Ran at : 08/12/19 17:53:13
+AppOnline = true, Running again at : 08/12/19 17:53:14
 
-Thread 1 Ran at : 08/12/19 02:40:47
-AppOnline = true, Running again at : 08/12/19 02:40:48
+Thread 1 Ran at : 08/12/19 17:53:14
+AppOnline = true, Running again at : 08/12/19 17:53:15
 
-Thread 1 Ran at : 08/12/19 02:40:48
-AppOnline = true, Running again at : 08/12/19 02:40:49
+Thread 1 Ran at : 08/12/19 17:53:14
+AppOnline = true, Running again at : 08/12/19 17:53:15
 
-Thread 1 Ran at : 08/12/19 02:40:49
-AppOnline = true, Running again at : 08/12/19 02:40:50
+Thread 1 Ran at : 08/12/19 17:53:15
+AppOnline = true, Running again at : 08/12/19 17:53:16
 
-Thread 1 Ran at : 08/12/19 02:40:50
-AppOnline = true, Running again at : 08/12/19 02:40:51
+Thread 1 Ran at : 08/12/19 17:53:15
+AppOnline = true, Running again at : 08/12/19 17:53:16
 
-Thread 1 Ran at : 08/12/19 02:40:51
-AppOnline = true, Running again at : 08/12/19 02:40:52
+Thread 1 Ran at : 08/12/19 17:53:16
+AppOnline = true, Running again at : 08/12/19 17:53:17
 
-Thread 1 Ran at : 08/12/19 02:40:52
-AppOnline = true, Running again at : 08/12/19 02:40:53
+Thread 1 Ran at : 08/12/19 17:53:16
+AppOnline = true, Running again at : 08/12/19 17:53:17
 
-Thread 1 Ran at : 08/12/19 02:40:53
-AppOnline = true, Running again at : 08/12/19 02:40:54
+Thread 1 Ran at : 08/12/19 17:53:17
+AppOnline = true, Running again at : 08/12/19 17:53:18
 
-Thread 1 Ran at : 08/12/19 02:40:54
-AppOnline = true, Running again at : 08/12/19 02:40:55
+Thread 1 Ran at : 08/12/19 17:53:17
+AppOnline = true, Running again at : 08/12/19 17:53:18
 
-Thread 1 Ran at : 08/12/19 02:40:55
-AppOnline = true, Running again at : 08/12/19 02:40:56
+Thread 1 Ran at : 08/12/19 17:53:18
+AppOnline = true, Running again at : 08/12/19 17:53:19
 
-Thread 1 Ran at : 08/12/19 02:40:56
-AppOnline = true, Running again at : 08/12/19 02:40:57
+Thread 1 Ran at : 08/12/19 17:53:18
+AppOnline = true, Running again at : 08/12/19 17:53:19
 
-Thread 1 Ran at : 08/12/19 02:40:57
-AppOnline = true, Running again at : 08/12/19 02:40:58
+Thread 1 Ran at : 08/12/19 17:53:19
+AppOnline = true, Running again at : 08/12/19 17:53:20
 
-Thread 1 Ran at : 08/12/19 02:40:58
-AppOnline = true, Running again at : 08/12/19 02:40:59
+Thread 1 Ran at : 08/12/19 17:53:19
+AppOnline = true, Running again at : 08/12/19 17:53:20
 
-Thread 1 Ran at : 08/12/19 02:40:59
-AppOnline = true, Running again at : 08/12/19 02:41:00
+Thread 1 Ran at : 08/12/19 17:53:20
+AppOnline = true, Running again at : 08/12/19 17:53:21
 
-Thread 1 Ran at : 08/12/19 02:41:00
-AppOnline = true, Running again at : 08/12/19 02:41:01
+Thread 1 Ran at : 08/12/19 17:53:20
+AppOnline = true, Running again at : 08/12/19 17:53:21
 
-Thread 1 Ran at : 08/12/19 02:41:01
-AppOnline = true, Running again at : 08/12/19 02:41:02
+Thread 1 Ran at : 08/12/19 17:53:21
+AppOnline = true, Running again at : 08/12/19 17:53:22
 
-Thread 1 Ran at : 08/12/19 02:41:02
-AppOnline = true, Running again at : 08/12/19 02:41:03
+Thread 1 Ran at : 08/12/19 17:53:21
+AppOnline = true, Running again at : 08/12/19 17:53:22
 
-Thread 1 Ran at : 08/12/19 02:41:03
-AppOnline = true, Running again at : 08/12/19 02:41:04
+Thread 1 Ran at : 08/12/19 17:53:22
+AppOnline = true, Running again at : 08/12/19 17:53:23
 
-Thread 1 Ran at : 08/12/19 02:41:04
-AppOnline = true, Running again at : 08/12/19 02:41:05
+Thread 1 Ran at : 08/12/19 17:53:22
+AppOnline = true, Running again at : 08/12/19 17:53:23
 
-Thread 1 Ran at : 08/12/19 02:41:05
-AppOnline = true, Running again at : 08/12/19 02:41:06
+Thread 1 Ran at : 08/12/19 17:53:23
+AppOnline = true, Running again at : 08/12/19 17:53:24
 
-Thread 1 Ran at : 08/12/19 02:41:06
-AppOnline = true, Running again at : 08/12/19 02:41:07
+Thread 1 Ran at : 08/12/19 17:53:23
+AppOnline = true, Running again at : 08/12/19 17:53:24
 
-Thread 1 Ran at : 08/12/19 02:41:07
-AppOnline = true, Running again at : 08/12/19 02:41:08
+Thread 1 Ran at : 08/12/19 17:53:24
+AppOnline = true, Running again at : 08/12/19 17:53:25
+
+Thread 1 Ran at : 08/12/19 17:53:24
+AppOnline = true, Running again at : 08/12/19 17:53:25
+
+Thread 1 Ran at : 08/12/19 17:53:25
+AppOnline = true, Running again at : 08/12/19 17:53:26
+
+Thread 1 Ran at : 08/12/19 17:53:25
+AppOnline = true, Running again at : 08/12/19 17:53:26
+
+Thread 1 Ran at : 08/12/19 17:53:26
+AppOnline = true, Running again at : 08/12/19 17:53:27
+
+Thread 1 Ran at : 08/12/19 17:53:26
+AppOnline = true, Running again at : 08/12/19 17:53:27
+
+Thread 1 Ran at : 08/12/19 17:53:27
+AppOnline = true, Running again at : 08/12/19 17:53:28
+
+Thread 1 Ran at : 08/12/19 17:53:27
+AppOnline = true, Running again at : 08/12/19 17:53:28
+
+Thread 1 Ran at : 08/12/19 17:53:28
+AppOnline = true, Running again at : 08/12/19 17:53:29
+
+Thread 1 Ran at : 08/12/19 17:53:28
+AppOnline = true, Running again at : 08/12/19 17:53:29
+
+Thread 1 Ran at : 08/12/19 17:53:29
+AppOnline = true, Running again at : 08/12/19 17:53:30
+
+Thread 1 Ran at : 08/12/19 17:53:29
+AppOnline = true, Running again at : 08/12/19 17:53:30
+
+Thread 1 Ran at : 08/12/19 17:53:30
+AppOnline = true, Running again at : 08/12/19 17:53:31
+
+Thread 1 Ran at : 08/12/19 17:53:30
+AppOnline = true, Running again at : 08/12/19 17:53:31
+
+Thread 1 Ran at : 08/12/19 17:53:31
+AppOnline = true, Running again at : 08/12/19 17:53:32
+
+Thread 1 Ran at : 08/12/19 17:53:31
+AppOnline = true, Running again at : 08/12/19 17:53:32
+
+Thread 1 Ran at : 08/12/19 17:53:32
+AppOnline = true, Running again at : 08/12/19 17:53:33
+
+Thread 1 Ran at : 08/12/19 17:53:32
+AppOnline = true, Running again at : 08/12/19 17:53:33
+
+Thread 1 Ran at : 08/12/19 17:53:33
+AppOnline = true, Running again at : 08/12/19 17:53:34
+
+Thread 1 Ran at : 08/12/19 17:53:33
+AppOnline = true, Running again at : 08/12/19 17:53:34
+
+Thread 1 Ran at : 08/12/19 17:53:34
+AppOnline = true, Running again at : 08/12/19 17:53:35
+
+Thread 1 Ran at : 08/12/19 17:53:34
+AppOnline = true, Running again at : 08/12/19 17:53:35
 

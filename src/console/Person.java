@@ -12,7 +12,6 @@ public class Person {
 	private List<Vehicles> Vehicles = new ArrayList<>();
 	private String name;
 	private String birthYear;
-	private List<String> films_urls;
 	private String gender;
 	private String hair_color;
 	private String height;
@@ -31,62 +30,65 @@ public class Person {
 		Vehicles.add(e);
 
 	}
-	
+
 	/**
 	 * Load additional arrays information into printable strings
 	 * Needs to be called prior to print.
 	 */
 	public void extraInfo() {
-		
-			Films.forEach(films -> {
-				all_films = all_films + "\n - "+ films.getTitle();
-			});
-			Vehicles.forEach(vehicles -> {
-				all_vehicles = all_vehicles + "\n - "+ vehicles.getName();
-			});
-			
-			if(all_vehicles == "") {
-				all_vehicles = " None";
-			}
+
+		Films.forEach(films -> {
+			all_films = all_films + "\n - "+ films.getTitle();
+		});
+		Vehicles.forEach(vehicles -> {
+			all_vehicles = all_vehicles + "\n - "+ vehicles.getName();
+		});
+
+		if(all_vehicles == "") {
+			all_vehicles = " None";
+		}
 	}
 
 	public void personPrint(boolean advanced) {
+		
 		if(App.using_gui == false) {
-		if(advanced == true) {
-			Films.forEach(films -> {
-				all_films = all_films + " | "+ films.getTitle();
-			});
-			Vehicles.forEach(vehicles -> {
-				all_vehicles = all_vehicles + " | "+ vehicles.getName();
-			});
-			
-			if(all_vehicles == "") {
-				all_vehicles = " None";
+			if(advanced == true) {
+				all_films = "";
+				Films.forEach(films -> {
+					all_films = all_films + " | "+ films.getTitle();
+				});
+				all_vehicles = "";
+				Vehicles.forEach(vehicles -> {
+					all_vehicles = all_vehicles + " | "+ vehicles.getName();
+				});
+
+				if(all_vehicles == "") {
+					all_vehicles = " None";
+				}
+				System.out.println("----------------------------------------------");
+				System.out.println("  C H A R A C T E R   I N F O R M A T I O N");
+				System.out.println("----------------------------------------------\n");
+				System.out.println(
+						"Name    : "+getName()
+						+"\nGender   : "+getGender()
+						+"\nSpecies : "+getSpecies()
+						+"\nHeight : "+getHeight()
+						+"\nMass : "+getMass()
+						+"\nHair Colour : "+getHair_color()
+						+"\nSkin Colour : "+getSkin_color()
+						+"\nEye Colour : "+getEye_color()
+						+"\nBirth Year : "+getBirthYear());
+				System.out.println("----------------------------------------------");
+
+				System.out.println("\nFilms Appeared In :"+ all_films
+						+"\nVehicles used :"+ all_vehicles+"\n");
+
+
 			}
-			System.out.println("----------------------------------------------");
-			System.out.println("  C H A R A C T E R   I N F O R M A T I O N");
-			System.out.println("----------------------------------------------\n");
-			System.out.println(
-					"Name    : "+getName()
-					+"\nGender   : "+getGender()
-					+"\nSpecies : "+getSpecies()
-					+"\nHeight : "+getHeight()
-					+"\nMass : "+getMass()
-					+"\nHair Colour : "+getHair_color()
-					+"\nSkin Colour : "+getSkin_color()
-					+"\nEye Colour : "+getEye_color()
-					+"\nBirth Year : "+getBirthYear());
-			System.out.println("----------------------------------------------");
+			else {
+				basicPrint();
 
-			System.out.println("\nFilms Appeared In :"+ all_films
-					+"\nVehicles used :"+ all_vehicles+"\n");
-
-
-		}
-		else {
-			basicPrint();
-
-		}
+			}
 		}
 		else if(App.using_gui == true) {
 			guiPrint();
@@ -97,14 +99,14 @@ public class Person {
 
 
 	private void guiPrint() {
-		
+
 		Films.forEach(films -> {
 			all_films = all_films + "\n - "+ films.getTitle();
 		});
 		Vehicles.forEach(vehicles -> {
 			all_vehicles = all_vehicles + "\n - "+ vehicles.getName();
 		});
-		
+
 	}
 
 	public String getAll_films() {
@@ -135,10 +137,11 @@ public class Person {
 	}
 
 	public void basicPrint() {
+		all_films = "";
 		Films.forEach(films -> {
 			all_films = all_films + " | "+ films.getTitle();
 		});
-		
+
 		System.out.println("C H A R A C T E R   I N F O R M A T I O N\nName    : "+getName()+"\nGender   : "+getGender()+"\n"
 				+ "Species : "+getSpecies()+"\nFilms Appeared In : "+ all_films);
 	}
@@ -228,14 +231,6 @@ public class Person {
 
 	public void setFilms(List<Films> films) {
 		Films = films;
-	}
-
-	public List<String> getFilms_urls() {
-		return films_urls;
-	}
-
-	public void setFilms_urls(List<String> films_urls) {
-		this.films_urls = films_urls;
 	}
 
 	public String getHair_color() {
