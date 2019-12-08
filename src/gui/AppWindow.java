@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import console.App;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -54,8 +55,9 @@ public class AppWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public AppWindow() {
-		
-		
+		App.thread.runTask1();
+		controller.menuactions.app.using_gui = true;
+		controller.StartUpCheck();
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1107, 695);
@@ -81,6 +83,7 @@ public class AppWindow extends JFrame {
 		
 		//START BUILDING REST OF GUI
 		controller.createSearchPanel();
+		controller.createDisplayPanel();
 		
 
 	}

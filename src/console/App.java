@@ -3,10 +3,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+
+import javax.swing.JOptionPane;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -18,18 +21,24 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import gui.AppWindow;
+import gui.GuiController;
+
+
 
 public class App {
 
-	public boolean using_gui = false;
-	public static boolean debug_mode = true;
+	public static boolean tableShow = false;
+	public static boolean networkErrorShow = false; //Used to set if the Network error pops up in GUI
+	public static boolean using_gui = false; //Is the App in GUI mode
+	public static boolean debug_mode = false; //Enable and disable debug mode (Console prints)
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
 
 	public static int character_count = 0;
 	public String next_page = "null";
 	public boolean allow_next = true;
-	public Thread thread = new Thread();
+	public static Thread thread = new Thread();
 	public boolean initialised = false;
 	public boolean enable_logs = true;
 	private boolean new_char = true;
@@ -38,15 +47,17 @@ public class App {
 
 	private String temptype = "";
 
-	List<Person> People = new ArrayList<>();
-	List<Films> Films = new ArrayList<>();
-	List<Vehicles> Vehicles = new ArrayList<>();
+	public List<Person> People = new ArrayList<>();
+	public List<Films> Films = new ArrayList<>();
+	public List<Vehicles> Vehicles = new ArrayList<>();
+	public List<Planets> Planets = new ArrayList<>();
 
 	private BufferedReader reader;
 	private HttpResponse response;
 	public JsonArray temp_array;
 	public boolean first_run = true;
 
+	//Person Variables
 	private String name = "";
 	private String gender = "";
 	private String height = "";
@@ -72,7 +83,7 @@ public class App {
 	 * @param searchquery - When using command (search by name). The parameter is a name to
 	 * to search for. E.g (Luke, Anakin etc).
 	 * @param searchnumber - Enter a number when searching for a person number
-	 * @param command - Command names {@link swapiCharacterSearch}
+	 * @param command - Command names {@link swapiCharacterSearch} in switch statement
 	 */
 	public void swapiCharacterSearch(String searchquery, String searchnumber, String command)  {
 
@@ -82,7 +93,7 @@ public class App {
 
 		case "search_by_name":
 			httpGet = new HttpGet("https://swapi.co/api/people/?search=" + searchquery);
-			
+
 			try {
 				personRequest(httpGet, "display", null);
 			} catch (Exception e) {
@@ -109,6 +120,15 @@ public class App {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			break;
+		case "planet_search":
+			httpGet = new HttpGet("https://swapi.co/api/planets/");
+			try {
+				personRequest(httpGet, "displayplanets", null);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}break;
 
 		default:
 			System.out.println(command + " is not a available command");
@@ -140,9 +160,9 @@ public class App {
 	//BUILDER
 	/**
 	 * 
-	 * @param getRequest
-	 * @param command
-	 * @param type
+	 * @param getRequest - The request to build
+	 * @param command -  Switch command
+	 * @param type -  tYpe if applicable
 	 * @return
 	 * @throws Exception
 	 */
@@ -152,6 +172,7 @@ public class App {
 
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		getRequest.addHeader("accept", "application/json");
+
 		HttpResponse response = httpClient.execute(getRequest);
 
 		Logger.appLog("[personRequestGet : "+getRequest+"\n");
@@ -201,6 +222,9 @@ public class App {
 				displaySingle(jsonObject);
 			}
 			is_an_array = false;
+			break;
+		case "displayplanets":
+			displayPlanets(arr);
 			break;
 
 
@@ -253,6 +277,15 @@ public class App {
 				v.setName(name);
 				Vehicles.add(v);
 			}
+			else if(type == "planets") {
+				String name =  jsonObject.get("name").getAsString();
+				String climate =  jsonObject.get("climate").getAsString();
+				Planets p = new Planets();
+				p.setName(name);
+				p.setClimate(climate);
+				System.err.println("Planets name : "+p.getName());
+				Planets.add(p);
+			}
 
 		}
 
@@ -272,7 +305,9 @@ public class App {
 			System.out.println("\n==================================================================================");
 			System.out.println("Mmm... No results are there. Try again you will.");
 			System.out.println("==================================================================================\n");
-
+			if(App.using_gui == true) {
+				GuiController.yodaDialog("Mmm... No results are there. Try again you will.");
+			}
 		}
 
 		if(arr.size() > 1) {
@@ -348,6 +383,7 @@ public class App {
 			JsonArray starships = result.getAsJsonArray("starships");
 
 
+
 			printSubCall("name", species);
 			p.setSpecies(temptype);
 
@@ -373,6 +409,65 @@ public class App {
 		}
 	}
 
+	public void displayPlanets(JsonArray arr) {
+
+		if(arr.size() != 0) {
+			Logger.appLog("Total Search Results per page : "+arr.size()+"\n");
+		}
+		if(arr.size() == 0) {
+			System.out.println("\n==================================================================================");
+			System.out.println("Mmm... No results are there. Try again you will.");
+			System.out.println("==================================================================================\n");
+			if(App.using_gui == true) {
+				GuiController.yodaDialog("Mmm... No results are there. Try again you will.");
+			}
+		}
+
+		if(arr.size() > 1) {
+			System.err.println("There are multiple results for this search.\n");
+		}
+
+		for (int i = 0; i < arr.size(); i++) {	
+			
+			Planets p = new Planets();
+			JsonObject result = arr.get(i).getAsJsonObject();
+
+			System.out.println("Array is : "+arr.toString());
+
+			String name = arr.get(i).getAsJsonObject().get("name").getAsString();
+			String rotationPeriod = arr.get(i).getAsJsonObject().get("rotation_period").getAsString();
+			String orbitalPeriod = arr.get(i).getAsJsonObject().get("orbital_period").getAsString();
+			String diameter = arr.get(i).getAsJsonObject().get("diameter").getAsString();
+			String climate = arr.get(i).getAsJsonObject().get("climate").getAsString();
+			String gravity = arr.get(i).getAsJsonObject().get("gravity").getAsString();
+			String terrain = arr.get(i).getAsJsonObject().get("terrain").getAsString();
+			String surfaceWater = arr.get(i).getAsJsonObject().get("surface_water").getAsString();
+			String population = arr.get(i).getAsJsonObject().get("population").getAsString();
+			System.out.println("Name is "+name);
+
+			p.setName(name);
+			p.setRotationPeriod(rotationPeriod);
+			p.setOrbitalPeriod(orbitalPeriod);
+			p.setDiameter(diameter);
+			p.setClimate(climate);
+			p.setGravity(gravity);
+			p.setTerrain(terrain);
+			p.setSurfaceWater(surfaceWater);
+			p.setPopulation(population);
+
+			Planets.add(p);
+			p.planetsPrint();
+
+			if(App.networkConnected == false){  
+				System.err.println("ERRRRRRRROOOOOORRRR"); 
+				App.networkError();
+				break;
+			}
+
+
+		}
+	}
+
 
 	/**
 	 * Call the Print for a single passed user. This is used when there isn't a results array
@@ -380,10 +475,10 @@ public class App {
 	 */
 	public void displaySingle(JsonObject job) {
 
-		
+
 		Person p = new Person();
 		Films f = new Films();
-		
+
 		name = job.getAsJsonObject().get("name").getAsString();
 		gender = job.getAsJsonObject().get("gender").getAsString();
 		height = job.getAsJsonObject().get("height").getAsString();
@@ -501,39 +596,71 @@ public class App {
 	}
 
 	public static void networkError() {
-
-		System.out.println("=====================================================================================================");
-		System.out.println("\nIt looks like you dont have an active Network Connection.\nThis App requires a connection in order to access the Star Wars API.");
-		System.out.println("=====================================================================================================\n");
-
-		Scanner input = new Scanner(System.in); 
-		System.out.println("Would you like to retry your connection?  Y / N ? :");
-		String reply = input.nextLine();
-		if(reply.equals("y") || reply.equals("Y")) {
-			System.out.println("\n=====================================================================================================");
-			System.out.println("\nRetrying...\n");
+		if(App.using_gui == false) {
 			System.out.println("=====================================================================================================");
-			Main.main(null);
-		}
-		else if(reply.equals("n") || reply.equals("N")) {
-
-			System.out.println("\n=====================================================================================================");
-			System.out.println("Exiting App............ May the force be with you!");
-			System.out.println("=====================================================================================================");
-			System.exit(0);
-
-		}
-
-		else {
-
-			System.out.println("\n=====================================================================================================");
-			System.out.println("There is only 'Y' or 'N'... There is no Try");
+			System.out.println("\nIt looks like you dont have an active Network Connection.\nThis App requires a connection in order to access the Star Wars API.");
 			System.out.println("=====================================================================================================\n");
-			Main.main(null);
+
+			Scanner input = new Scanner(System.in); 
+			System.out.println("Would you like to retry your connection?  Y / N ? :");
+			String reply = input.nextLine();
+			if(reply.equals("y") || reply.equals("Y")) {
+				System.out.println("\n=====================================================================================================");
+				System.out.println("\nRetrying...\n");
+				System.out.println("=====================================================================================================");
+				Main.main(null);
+			}
+			else if(reply.equals("n") || reply.equals("N")) {
+
+				System.out.println("\n=====================================================================================================");
+				System.out.println("Exiting App............ May the force be with you!");
+				System.out.println("=====================================================================================================");
+				System.exit(0);
+
+			}
+
+			else {
+
+				System.out.println("\n=====================================================================================================");
+				System.out.println("There is only 'Y' or 'N'... There is no Try");
+				System.out.println("=====================================================================================================\n");
+				Main.main(null);
+			}
+		}
+		else if(App.using_gui == true) {
+			Object[] options = {"Retry Connection",
+			"Quit Application"};
+
+			int n = JOptionPane.showOptionDialog(AppWindow.frame,
+					"It Looks Like there may be a connection issue?\n"
+							+ "Do you want to retry the connection?"
+							,
+							"Unable to Connect to SWAPI ",
+							JOptionPane.YES_NO_CANCEL_OPTION,
+							JOptionPane.QUESTION_MESSAGE,
+							null,
+							options,
+							options[0]);
+
+
+			if (n == JOptionPane.YES_OPTION) {
+				GuiController.networkCheck();
+				AppWindow.frame.show();
+				App.networkErrorShow = false;
+				System.out.println("Retry Pressed");
+
+
+			} else if (n == JOptionPane.NO_OPTION) {
+				System.out.println("Shutting down app");
+				System.exit(0);
+			} else if (n == JOptionPane.CLOSED_OPTION) {
+				System.exit(0);
+
+			} 
 		}
 	}
 
-	public void createDir() {
+	public static void createDir() {
 		File file = new File("SWapi\\config.txt");
 		file.getParentFile().mkdir(); 
 		try {
@@ -557,7 +684,7 @@ public class App {
 	/**
 	 * InitialiseApp is used to start the App thread and log the first message.
 	 */
-	public void initialiseApp() {
+	public static void initialiseApp() {
 		thread.runTask1();
 		Logger.appLog("SWapi started at : ");
 	}

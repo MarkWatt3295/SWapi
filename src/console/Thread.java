@@ -12,6 +12,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import gui.GuiController;
+
 public class Thread {
 
 
@@ -69,6 +71,12 @@ public class Thread {
 						Main.menuactions.app.createDir();
 					}
 				}
+				
+				if(App.using_gui == true) {
+					if(App.networkErrorShow == false) {
+					GuiController.networkCheck();
+					}
+				}
 
 				try {
 					URL url = new URL("http://www.google.com");
@@ -78,8 +86,10 @@ public class Thread {
 
 				} catch (MalformedURLException e) {
 					App.networkConnected = false;
+					
 				} catch (IOException e) {
 					App.networkConnected = false;
+					
 				}
 
 				File f = new File("SWapi");

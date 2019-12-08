@@ -16,6 +16,8 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JToggleButton;
+import javax.swing.JComboBox;
+import javax.swing.JTextArea;
 
 public class PanelSearch extends JPanel {
 
@@ -27,11 +29,20 @@ public class PanelSearch extends JPanel {
 	public JToggleButton btn_search_planet = new JToggleButton("");
 	public JToggleButton btn_search_spaceship = new JToggleButton("");
 	public JToggleButton btn_clear_all = new JToggleButton("");
+	
+	public JButton btn_save_results = new JButton("");
+	public JButton btn_copyClipboard = new JButton("");
+	public 	JButton btn_clear = new JButton("");
+	
+	
 	public JTextField textField = new JTextField();
+	public JComboBox comboBox = new JComboBox();
 	
 	public JPanel panel_button_box = new JPanel();
 	public JLabel lblSwapiSearch = new JLabel("SWapi Search");
 	public JButton btn_search = new JButton("");
+	public JTextArea textArea = new JTextArea();
+	public JScrollPane scrollPane = new JScrollPane();
 	
 	
 	/**
@@ -90,39 +101,54 @@ public class PanelSearch extends JPanel {
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(10, 229, 849, 100);
 		panel.add(panel_1);
-		panel_1.setLayout(new MigLayout("", "[551px][280.00px]", "[100px]"));
+		panel_1.setLayout(null);
+		textField.setBounds(7, 7, 551, 48);
 		
 		textField.setFont(new Font("Segoe UI Black", Font.PLAIN, 30));
-		panel_1.add(textField, "cell 0 0,grow");
+		panel_1.add(textField);
 		textField.setColumns(10);
+		btn_search.setBounds(562, 7, 280, 89);
 		
 		
 		btn_search.setIcon(new ImageIcon(PanelSearch.class.getResource("/Resources/img/tick.png")));
 		btn_search.setToolTipText("Search");
-		panel_1.add(btn_search, "cell 1 0,grow");
+		panel_1.add(btn_search);
+		
+		
+		comboBox.setBounds(7, 55, 551, 41);
+		panel_1.add(comboBox);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(10, 340, 849, 305);
 		panel.add(panel_3);
 		panel_3.setLayout(null);
 		
-		JTextPane textPane = new JTextPane();
-		textPane.setBounds(0, 0, 757, 305);
-		panel_3.add(textPane);
-		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(762, 0, 87, 305);
+		panel_2.setBounds(740, 0, 109, 305);
 		panel_3.add(panel_2);
 		panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JButton btnNewButton_2 = new JButton("New button");
-		panel_2.add(btnNewButton_2);
+		btn_save_results.setIcon(new ImageIcon(PanelSearch.class.getResource("/Resources/img/floppy-disk.png")));
+		btn_save_results.setToolTipText("Save Results");
+		panel_2.add(btn_save_results);
 		
-		JButton btnNewButton_3 = new JButton("New button");
-		panel_2.add(btnNewButton_3);
 		
-		JButton btnNewButton_1 = new JButton("New button");
-		panel_2.add(btnNewButton_1);
+		btn_copyClipboard.setIcon(new ImageIcon(PanelSearch.class.getResource("/Resources/img/copy.png")));
+		btn_copyClipboard.setToolTipText("Copy To Clip Board");
+		panel_2.add(btn_copyClipboard);
+		
+	
+		btn_clear.setIcon(new ImageIcon(PanelSearch.class.getResource("/Resources/img/delete.png")));
+		btn_clear.setToolTipText("Clear Text");
+		panel_2.add(btn_clear);
+		scrollPane.setBounds(0, 0, 741, 305);
+		
+		panel_3.add(scrollPane);
+		textArea.setLineWrap(true);
+		textArea.setFont(new Font("Monospaced", Font.PLAIN, 22));
+		textArea.setEditable(false);
+		scrollPane.setViewportView(textArea);
+		textArea.setWrapStyleWord(true);
 
 	}
 }

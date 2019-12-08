@@ -8,7 +8,8 @@ import gui.AppWindow;
 
 public class MenuActions {
 
-	private String character_text;
+	private String character_text; //String used to store the searched character
+	private String planet_search;
 	public App app = new App();
 	ConsolePrint console = new ConsolePrint();
 
@@ -67,7 +68,13 @@ public class MenuActions {
 	}
 
 	/**
-	 * Use th
+	 * Big Switch statement for the main menu print
+	 * 1 - Print all characters
+	 * 2 - Search for a character
+	 * 3 - Re display character info
+	 * 4 - Display info tabular
+	 * 5 - Random character
+	 * 
 	 * @param command
 	 */
 	public void menuChoice(int command) {
@@ -126,6 +133,14 @@ public class MenuActions {
 				System.err.println("R is "+r);
 				app.swapiCharacterSearch(null, Integer.toString(r), "search_by_number");
 			}
+			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
+			break;
+		case 6:
+			System.out.println("Enter a Planet to search for");
+			Scanner planet_input = new Scanner(System.in);
+			planet_search = planet_input.nextLine();
+			checkString(planet_search);
+			app.swapiCharacterSearch(planet_search, null, "planet_search");
 			endResult(false, 1, "Press \"Enter\" to return to the main menu.");
 			break;
 		case 9:
@@ -263,6 +278,12 @@ public class MenuActions {
 
 	}
 
+	/**
+	 * Take the entered string and remove illegal characters.
+	 * I swap them for pluses as the request handler can understand them.
+	 * They also return better responses.
+	 * @param text
+	 */
 	private void checkString(String text) {
 		Logger.appLog("[checkString] Search Query before : "+text);
 		text = text.replaceAll("[^a-zA-Z0-9]"," ");

@@ -31,9 +31,27 @@ public class Person {
 		Vehicles.add(e);
 
 	}
+	
+	/**
+	 * Load additional arrays information into printable strings
+	 * Needs to be called prior to print.
+	 */
+	public void extraInfo() {
+		
+			Films.forEach(films -> {
+				all_films = all_films + "\n - "+ films.getTitle();
+			});
+			Vehicles.forEach(vehicles -> {
+				all_vehicles = all_vehicles + "\n - "+ vehicles.getName();
+			});
+			
+			if(all_vehicles == "") {
+				all_vehicles = " None";
+			}
+	}
 
 	public void personPrint(boolean advanced) {
-
+		if(App.using_gui == false) {
 		if(advanced == true) {
 			Films.forEach(films -> {
 				all_films = all_films + " | "+ films.getTitle();
@@ -69,15 +87,58 @@ public class Person {
 			basicPrint();
 
 		}
-		all_films = "";
-		all_vehicles = "";
+		}
+		else if(App.using_gui == true) {
+			guiPrint();
+		}
+		//all_films = "";
+		//all_vehicles = "";
 	}
 
+
+	private void guiPrint() {
+		
+		Films.forEach(films -> {
+			all_films = all_films + "\n - "+ films.getTitle();
+		});
+		Vehicles.forEach(vehicles -> {
+			all_vehicles = all_vehicles + "\n - "+ vehicles.getName();
+		});
+		
+	}
+
+	public String getAll_films() {
+		return all_films;
+	}
+
+	public void setAll_films(String all_films) {
+		this.all_films = all_films;
+	}
+
+	public String getAll_vehicles() {
+		if(all_vehicles == "") {
+			all_vehicles = " None";
+		}
+		return all_vehicles;
+	}
+
+	public void setAll_vehicles(String all_vehicles) {
+		this.all_vehicles = all_vehicles;
+	}
+
+	public List<Vehicles> getVehicles() {
+		return Vehicles;
+	}
+
+	public void setVehicles(List<Vehicles> vehicles) {
+		Vehicles = vehicles;
+	}
 
 	public void basicPrint() {
 		Films.forEach(films -> {
 			all_films = all_films + " | "+ films.getTitle();
 		});
+		
 		System.out.println("C H A R A C T E R   I N F O R M A T I O N\nName    : "+getName()+"\nGender   : "+getGender()+"\n"
 				+ "Species : "+getSpecies()+"\nFilms Appeared In : "+ all_films);
 	}
