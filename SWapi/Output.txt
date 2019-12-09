@@ -1,0 +1,24 @@
+
+-------------------------------------------------------
+    C H A R A C T E R   I N F O R M A T I O N
+-------------------------------------------------------
+
+Name : Sly Moore
+Gender : female
+Species : 
+Height : 178
+Mass : 48
+Hair Colour : none
+Skin Colour : pale
+Eye Colour : white
+Birth Year : unknown
+-------------------------------------------------------
+
+Films Appeared In :
+
+ - Attack of the Clones
+ - Revenge of the Sith
+
+Vehicles used :
+ None
+-------------------------------------------------------

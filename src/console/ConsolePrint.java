@@ -8,14 +8,14 @@ public class ConsolePrint {
 
 	private boolean displayheader = true;
 
-	
+
 
 
 
 	public void menuDraw(){
 		if(displayheader == false) {
 			MenuActions.clrscr();
-			
+
 		}
 
 		if(App.networkConnected == true) {
@@ -34,7 +34,7 @@ public class ConsolePrint {
 			System.out.println("4 - View Character Search History (Tabular)");
 			System.out.println("5 - Random Character Info");
 			System.out.println("6 - Planet Search");
-			System.out.println("7 - Ship Search");
+			System.out.println("7 - Spaceship Search");
 			System.out.println("8 - Vehicle Search");
 			System.out.println("9 - Star Wars F.O.T.D (Not Implemented)");
 			System.out.println("10 - About");
@@ -61,7 +61,7 @@ public class ConsolePrint {
 				}
 				catch (InputMismatchException e) {
 					Main.menuactions.endResult(false, 1, "This is not the number you are looking for....\nPress \"Enter\" to Try Again.\n");
-//menuDraw();
+					//menuDraw();
 				}
 			}
 			else {
@@ -75,12 +75,12 @@ public class ConsolePrint {
 
 	public void printGuiChoice(){
 		if(Main.menuactions.app.initialised == false) {
-		Main.menuactions.app.initialiseApp();
-		Main.menuactions.app.initialised = true;
+			Main.menuactions.app.initialiseApp();
+			Main.menuactions.app.initialised = true;
 		}
 		MenuActions.clrscr();
 		AsciiArt.asciiDraw();
-		
+
 		Logger.appLog("SWapi started at : ");
 		System.out.println("\n==================================================================================\n");
 		System.out.println("What kind of GUI would you like to use?\n");
@@ -99,7 +99,7 @@ public class ConsolePrint {
 
 			System.err.println();
 			Main.menuactions.endResult(false, 2, "*Wave Hand* This is not the number you're looking for....\nEnter a number from the menu.\n\n\"Press Enter to Continue\"");
-			
+
 		}
 
 	}
@@ -121,9 +121,9 @@ public class ConsolePrint {
 		System.out.println("-----------------------------------------------------------------------------");
 
 	}
-	
+
 	public void advancedArraylistTable() {
-		
+
 		System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------");
 		ArrayListTable aat = new ArrayListTable();
 		int i = 1;
@@ -179,7 +179,7 @@ public class ConsolePrint {
 				}
 				catch (InputMismatchException e) {
 					Main.menuactions.endResult(false, 3, "This is not the number you are looking for....\nPress \"Enter\" to retry.\n");
-				
+
 				}
 			}
 			else if(App.networkConnected == false){
@@ -202,40 +202,40 @@ public class ConsolePrint {
 		System.out.println("       [AppOnline : "+ App.networkConnected +"] | [DebugMode : "+App.debug_mode + "] | [DirectoryExists : "+App.directory_exists + "]");
 		System.out.println("       [ThreadsRunning : "+ Main.menuactions.app.thread.allow_thread +"] | [LogsEnabled : "+Main.menuactions.app.enable_logs + "] "
 				+ "");
-		
+
 	}
-	
+
 	public void continueSearch(HttpGet get) {
-		
+
 		if(App.character_count > 0 ) {
-		System.out.println("\nThere are : "+App.character_count + " character results.\n\nDo you want to display them all ?\n"
-				+ "(This will take a while!)");
-		System.out.println("==================================================================================\n");
-		System.out.println("Enter \"Y\" / \"N\"");
-		System.out.println("\n==================================================================================\n");
-		Scanner yes_no = new Scanner(System.in);
-		String answer = yes_no.nextLine();
-		if(answer.equals("y") || answer.equals("Y")) {
-			
-			try {
-				Main.menuactions.app.personRequest(get, "counted_request", null);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			System.out.println("\nThere are : "+App.character_count + " character results.\n\nDo you want to display them all ?\n"
+					+ "(This will take a while!)");
+			System.out.println("==================================================================================\n");
+			System.out.println("Enter \"Y\" / \"N\"");
+			System.out.println("\n==================================================================================\n");
+			Scanner yes_no = new Scanner(System.in);
+			String answer = yes_no.nextLine();
+			if(answer.equals("y") || answer.equals("Y")) {
+
+				try {
+					Main.menuactions.app.personRequest(get, "counted_request", null);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else if(answer.equals("n") || answer.equals("N")) {
+				Main.menuactions.console.menuDraw();
+			}
+			else {
+				System.out.println("Invalid response ");
+				continueSearch(get);
 			}
 		}
-		else if(answer.equals("n") || answer.equals("N")) {
-			Main.menuactions.console.menuDraw();
-		}
-		else {
-			System.out.println("Invalid response ");
-			continueSearch(get);
-		}
-		}
-			
-		}
-	
-	
+
+	}
+
+
 	public void twoChoices() {
 		System.out.println("==================================================================================\n");
 		System.out.println("There are 2 options for viewing the Data.\n");
@@ -253,11 +253,11 @@ public class ConsolePrint {
 
 			System.err.println();
 			Main.menuactions.endResult(false, 4, "Theres 2 choices. You chose none of them....\nEnter a number from the menu.\n\n\"Press Enter to Continue\"");
-			
+
 		}
 	}
-	
-	
+
+
 	public void drawAdvancedTable() {
 		System.out.println("==================================================================================\n");
 		System.out.println("There are 2 options for Table viewing.\n");
@@ -275,7 +275,7 @@ public class ConsolePrint {
 
 			System.err.println();
 			Main.menuactions.endResult(false, 4, "Theres 2 choices. You chose none of them....\nEnter a number from the menu.\n\n\"Press Enter to Continue\"");
-			
+
 		}
 	}
 

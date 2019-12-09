@@ -10,6 +10,8 @@ import console.App;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Image;
+
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 
@@ -42,7 +44,8 @@ public class AppWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
+					frame.setTitle("SWapi Java");
+					frame.setIconImage(getFrameImage());
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -65,7 +68,7 @@ public class AppWindow extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
+		; 
 
 		panel.setBounds(0, 0, 1117, 679);
 		panel.setBackground(Color.BLACK);
@@ -84,6 +87,9 @@ public class AppWindow extends JFrame {
 		//START BUILDING REST OF GUI
 		controller.createSearchPanel();
 		controller.createDisplayPanel();
+		controller.createAboutPanel();
+		controller.createSettingsPanel();
+		controller.createExportPanel();
 		
 
 	}
@@ -136,5 +142,14 @@ public class AppWindow extends JFrame {
 		controller.dashboardStart(btn_dashboard);
 	}
 
+	//Returns an Image or null.
+		public static Image getFrameImage() {
+			java.net.URL imgURL = AppWindow.class.getResource("/Resources/img/yoda.png");
+			if (imgURL != null) {
+				return new ImageIcon(imgURL).getImage();
+			} else {
+				return null;
+			}
+		}
 
 }

@@ -4,14 +4,20 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +49,8 @@ public class GuiController {
 	public String searchCommand; //The command to pass to search panel switch
 	public String fullprint = ""; //Holds texpane print
 	public String vehicle_print = "" ;//Hold textpane of vehicle prints
+	public String ship_print = "" ;//Hold textpane of ship prints
+	public String planet_print = "" ;//Hold textpane of planet prints
 
 	public MenuActions menuactions = new MenuActions();
 
@@ -243,6 +251,8 @@ public class GuiController {
 					System.out.println("Random Character button pressed");
 					randomConfirmation();
 				}
+
+
 			}
 
 
@@ -285,6 +295,7 @@ public class GuiController {
 		}
 		else if (n == JOptionPane.NO_OPTION) {
 			System.out.println("User said no");
+			resetSearchToggles();
 
 		};
 	}
@@ -346,6 +357,32 @@ public class GuiController {
 									}
 									break;
 
+								case "Spaceship Search":
+									ship_print = "";
+									panel_search.textArea.revalidate();
+									menuactions.app.Spaceship.clear(); //Clear the Array
+									try {
+										menuactions.app.swapiCharacterSearch(s, null, "ship_search");
+										SpaceshipDraw();
+									}catch(IllegalArgumentException e1) {
+										GuiController.yodaDialog("Invalid search, Try again you must");
+										searchClear();
+									}
+									break;
+
+								case "Planet Search":
+									planet_print = "";
+									panel_search.textArea.revalidate();
+									menuactions.app.Planets.clear(); //Clear the Array
+									try {
+										menuactions.app.swapiCharacterSearch(s, null, "planet_search");
+										PlanetDraw();
+									}catch(IllegalArgumentException e1) {
+										GuiController.yodaDialog("Invalid search, Try again you must");
+										searchClear();
+									}
+									break;
+
 								default:
 									dialogWarning("Theres no Toggles selected", "No Toggle Selected");
 									break;
@@ -372,6 +409,28 @@ public class GuiController {
 					searchClear();
 				}
 
+				else if(button == panel_search.btn_save_results) {
+					File file = new File("SWapi\\Output.txt");
+					try {
+						writeStringToFile(file, panel_search.textArea.getText());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					GuiController.mDialog("ewok.png", "The save functionality would allow the user to save the outputted results\n"
+							+ "in a specified format to a specified location.\nYour file has been saved"
+							+ "as  Output.txt in the SWapi folder ", "This feature is only half implemented");
+				}
+				else if(button == panel_search.btn_copyClipboard) {
+					System.out.println("Copied to clipboard");
+					Toolkit.getDefaultToolkit()
+					.getSystemClipboard()
+					.setContents(
+							new StringSelection(panel_search.textArea.getText()),
+							null
+							);
+				}
+
 			}
 
 			private void searchClear() {
@@ -389,6 +448,20 @@ public class GuiController {
 
 		});
 	}
+	public void writeStringToFile(File file, String text) throws IOException {
+		if (file == null)
+			throw new IllegalArgumentException("file cannot be null");
+
+		if (text == null)
+			throw new IllegalArgumentException("text cannot be null");
+
+		String filePath = file.getAbsolutePath();
+
+		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePath))) {
+			writer.write(text);
+		}
+	}
+
 
 	/**
 	 * Create a print out that will be returned to display a Character
@@ -416,7 +489,7 @@ public class GuiController {
 					+"-------------------------------------------------------\n";
 
 
-			
+
 		});
 		panel_search.textArea.setText(fullprint);
 		panel_search.textArea.repaint();
@@ -451,6 +524,61 @@ public class GuiController {
 		panel_search.textArea.revalidate();
 	}
 
+	private void SpaceshipDraw() {
+		menuactions.app.Spaceship.forEach(ship -> {
+
+			ship_print = ship_print 
+					+"\n-------------------------------------------------------\n"
+					+"       S P A C E S H I P   I N F O R M A T I O N\n"
+					+"-------------------------------------------------------\n"
+					+"Name    : "+ship.getName()
+					+"\nModel   : "+ship.getModel()
+					+"\nManufacturer : "+ship.getManufacturer()
+					+"\nCost in Credits : "+ship.getCost_in_credits()
+					+"\nLength : "+ship.getLength()
+					+"\nMax Atmosphering Speed : "+ship.getMax_atmosphering_speed()
+					+"\nCrew : "+ship.getCrew()
+					+"\nPassengers : "+ship.getPassengers()
+					+"\nCargo Capacity : "+ship.getCargo_capactity()
+					+"\nConsumables : "+ship.getConsumables()
+					+"\nMGLT : "+ship.getMglt()
+					+"\nHyper Drive Rating : "+ship.getHyperdrive_rating()
+					+"\nStarship Class : "+ship.getStarship_class()
+					+"\n-------------------------------------------------------\n";
+
+		});
+		menuactions.app.Spaceship.clear(); //Clear the Array
+		panel_search.textArea.setText(ship_print);
+		panel_search.textArea.repaint();
+		panel_search.textArea.revalidate();
+	}
+
+
+	private void PlanetDraw() {
+		menuactions.app.Planets.forEach(planet -> {
+
+			planet_print = planet_print 
+					+"\n-------------------------------------------------------\n"
+					+"           P L A N E T  I N F O R M A T I O N\n"
+					+"-------------------------------------------------------\n"
+					+"Name    : "+planet.getName()
+					+"\nRotational Period   : "+planet.getRotationPeriod()
+					+"\nOrbital Period : "+planet.getOrbitalPeriod()
+					+"\nDiameter : "+planet.getDiameter()
+					+"\nGravity : "+planet.getGravity()
+					+"\nTerrain : "+planet.getTerrain()
+					+"\nSurface Water : "+planet.getSurfaceWater()
+					+"\nPopulation : "+planet.getPopulation()
+					+"\n-------------------------------------------------------\n";
+
+		});
+
+		menuactions.app.Planets.clear(); //Clear the Array
+		panel_search.textArea.setText(planet_print);
+		panel_search.textArea.repaint();
+		panel_search.textArea.revalidate();
+	}
+
 	/**
 	 * Use a loop to add button commands for all buttons.
 	 * This Method gives each button in PanelSearch its actions and listeners
@@ -474,11 +602,13 @@ public class GuiController {
 		buttonDraw(panel_search.btn_copyClipboard, Color.black, new Color(0, 153, 204), 0);
 		buttonDraw(panel_search.btn_clear, Color.black, Color.DARK_GRAY, 0);
 
-		spButtonListener(panel_search.btn_save_results);
+		spButtonListener(panel_search.btn_save_results); //Add Listeners for hover event
 		spButtonListener(panel_search.btn_copyClipboard);
-
 		spButtonListener(panel_search.btn_clear);
-		spButtonActions(panel_search.btn_clear);
+
+		spButtonActions(panel_search.btn_clear); //Add listeners for Action event
+		spButtonActions(panel_search.btn_save_results);
+		spButtonActions(panel_search.btn_copyClipboard);
 
 		spButtonListener(panel_search.btn_search);
 		spButtonActions(panel_search.btn_search);
@@ -487,9 +617,106 @@ public class GuiController {
 	//END SP
 	//================================================================
 
+	//PANEL ABOUT
+	public void createAboutPanel() {
+		panel_about.textArea.setText(menuactions.aboutText(false));
+		panel_about.textArea.repaint();
+		panel_about.textArea.revalidate();
+	}
 
+	//PANEL Settings
+	public void createSettingsPanel() {
+		buttonDraw(panel_settings.btn_folder, Color.WHITE, new Color(112, 128, 144), 20);
+		buttonDraw(panel_settings.btn_theme, Color.WHITE, new Color(244, 164, 96), 20);
+		defaultToggleButton(panel_settings.btn_debug, new Color(143, 188, 143));
+		defaultToggleButton(panel_settings.btn_threads, new Color(100, 149, 237));
+		settingsPanelButtonListener(panel_settings.btn_folder, panel_settings.btn_debug);
+		settingsPanelButtonListener(panel_settings.btn_theme, panel_settings.btn_threads);
+		
+	}
+	
+	
 
+	//Listen to the settings panel buttons
+	public void settingsPanelButtonListener(JButton button, JToggleButton togbutton) {
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+		});
 
+		togbutton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				togbutton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+		});
+
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(button == panel_settings.btn_folder) {
+					MenuActions.openSwapiFolder();
+				}
+				else if(button == panel_settings.btn_theme) {
+					mDialog("palette.png", "This feature hasn't been implemented yet.\nIt would allow "
+							+ "the user to give the app a different colour theme.", "Not Implemented yet");
+				}
+			}
+		});
+
+		togbutton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+	}
+
+	//Panel Export
+	
+		public void createExportPanel() {
+			buttonDraw(panel_export.btnCsv, Color.WHITE, new Color(112, 128, 144), 20);
+			buttonDraw(panel_export.btnExportAsJson, Color.WHITE, new Color(244, 164, 96), 20);
+			buttonDraw(panel_export.btnExportAsTxt, Color.WHITE, new Color(143, 188, 143), 20);
+			buttonDraw(panel_export.btnSerialize, Color.WHITE, new Color(100, 149, 237), 20);
+			buttonDraw(panel_export.btnImport, Color.WHITE, new Color(51, 153, 153), 20);
+			exportPanelButtonListener(panel_export.btnCsv);
+			exportPanelButtonListener(panel_export.btnExportAsJson);
+			exportPanelButtonListener(panel_export.btnExportAsTxt);
+			exportPanelButtonListener(panel_export.btnImport);
+			exportPanelButtonListener(panel_export.btnSerialize);
+			
+		}
+		
+		//EXPORT PANEL button listeners
+		public void exportPanelButtonListener(JButton button) {
+			button.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				}
+			});
+
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+				mDialog("stormtrooper.png", "None of the buttons on this page have been implemented yet."
+						+ "\nThe idea was to have a way to export and import data.\n"
+						+ "The data could also be serialized and reloaded the next time the app\n"
+						+ "runs.", "Not Implemented Yet");
+					
+				}
+			});
+
+			
+		}
+	
+	
+	public void defaultToggleButton(JToggleButton button, Color back) {
+		button.setBackground(back);
+		button.setFont(new Font("Segoe UI Black", Font.PLAIN, 20));
+		button.setFocusPainted(false);
+		button.setContentAreaFilled(true);
+	}
 	//===================================================================
 	//Display Panels
 	public void createDisplayPanel() {
@@ -635,7 +862,7 @@ public class GuiController {
 
 	/**
 	 * Create A popup dialog message
-	 * @param iconname - the image name e.g. 'alien.png'
+	 * @param iconname - the image name e.g. 'yoda.png'
 	 * @param message - message to display
 	 * @param title - title of the message
 	 */

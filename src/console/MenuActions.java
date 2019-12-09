@@ -238,20 +238,7 @@ public class MenuActions {
 			break;
 
 		case 3:
-			System.out.println("Opening SWapi Folder...");
-			Desktop desktop = Desktop.getDesktop();
-			File dirToOpen = null;
-			try {
-				dirToOpen = new File("SWapi");
-				try {
-					desktop.open(dirToOpen);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (IllegalArgumentException iae) {
-				System.out.println("File Not Found");
-			}
+			openSwapiFolder();
 			endResult(false, 3, "Press \"Enter\" to return to Advanced Menu");
 			break;
 		case 4:
@@ -287,6 +274,27 @@ public class MenuActions {
 			console.advancedMenuDraw();
 			break;
 		}
+	}
+
+	/**
+	 * Open the swapi resource folder
+	 */
+	public static void openSwapiFolder() {
+		System.out.println("Opening SWapi Folder...");
+		Desktop desktop = Desktop.getDesktop();
+		File dirToOpen = null;
+		try {
+			dirToOpen = new File("SWapi");
+			try {
+				desktop.open(dirToOpen);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (IllegalArgumentException iae) {
+			System.out.println("File Not Found");
+		}
+		
 	}
 
 	/**
@@ -344,7 +352,7 @@ public class MenuActions {
 				+ "This is the first API I have properly interacted with and found it very intuative.\n"
 				+ "Once I get to a stage in the app where I have made everything I have wanted,\n"
 				+ "I think I will try and improve on the API interaction in another programming\nlanguage."
-				+ "I was unable to get everything I wanted done due to time limitations.\n"
+				+ "\n"
 				+ "Here are a couple of Features I plan to add as I further develop SWapi Java.\n"
 				
 				+ "\n\n"
@@ -381,8 +389,11 @@ public class MenuActions {
 				+ "SWapi is a free open source API available at : https://swapi.co"
 				+ "\n\nStar Wars and all associated names and references are copyright Lucasfilmltd\n\n"
 				+ "The icons used in the GUI are copyright free and can be found at :\nhttps://www.flaticon.com\n"
-				+ "\nhe background used in the GUI dashboard is a copyright free background\n"
-				+ "available at : https://wallpaperaccess.com/star-wars\n"
+				+ "\nThe background used in the GUI dashboard is a copyright free background\n"
+				+ "available at : https://wallpaperaccess.com/star-wars\n\n"
+				+ "\nThe Ascii Art used in my console prints where not made by me. They are taken from\n"
+				+ "a free to use Ascii art generator page."
+				+ "The Ascii art can be found at : https://www.asciiart.eu/movies/star-wars\n"
 				+"==================================================================================\n"
 				+"                          S O U R C E    C O D E \n"
 				+"==================================================================================\n"

@@ -25,21 +25,30 @@ import gui.AppWindow;
 import gui.GuiController;
 
 
-
+/**
+ * This class is used to store all of the main data in the app.
+ * The majority of its boolean variables have been made static
+ * to allow various other classes to access the information.
+ * @author Mark
+ *
+ */
 public class App {
 
+	public static boolean disable_midis = false; //Used to disable the midi-chlorian message
 	public static boolean tableShow = false;
 	public static boolean networkErrorShow = false; //Used to set if the Network error pops up in GUI
 	public static boolean using_gui = false; //Is the App in GUI mode
-	public static boolean debug_mode = true;
-			; //Enable and disable debug mode (Console prints)
+	public static boolean debug_mode = false; //Enable and disable debug mode (Console prints)
 	public static boolean networkConnected = false;
 	public static boolean directory_exists = false;
 
-	public static int character_count = 0;
-	public String next_page = "null";
-	public boolean allow_next = true;
-	public static Thread thread = new Thread();
+	public static int character_count = 0; //The ammount of characters counted from Api get.
+
+	public String next_page = "null"; //Initially null as Json passes null as a string
+	public boolean allow_next = true; //Is next page allowed
+
+	public static Thread thread = new Thread(); //Create the main thread
+
 	public boolean initialised = false;
 	public boolean enable_logs = true;
 	private boolean new_char = true;
@@ -48,6 +57,8 @@ public class App {
 
 	private String temptype = "";
 
+
+	//ARRAY LISTS for each of the main category being stored and collected
 	public List<Person> People = new ArrayList<>();
 	public List<Films> Films = new ArrayList<>();
 	public List<Vehicles> Vehicles = new ArrayList<>();
@@ -72,11 +83,18 @@ public class App {
 	private String home_world = "";
 
 
-
+	/**
+	 * Is advanced print enabled?
+	 * @return
+	 */
 	public boolean isAdvanced_print() {
 		return advanced_print;
 	}
 
+	/**
+	 * Set advanced print
+	 * @param advanced_print
+	 */
 	public void setAdvanced_print(boolean advanced_print) {
 		this.advanced_print = advanced_print;
 	}
@@ -143,7 +161,7 @@ public class App {
 				e.printStackTrace();
 			}
 			break;
-			
+
 		case "vehicle_search":
 			httpGet = new HttpGet("https://swapi.co/api/vehicles/?search=" + searchquery);
 			try {
@@ -166,7 +184,11 @@ public class App {
 
 
 
-
+	/**
+	 * Used to directly execute a http get using just a type switch
+	 * @param uri - The searchspace
+	 * @param type - category to search for (species etc)
+	 */
 	public void swapiSearch(String uri, String type) {
 		HttpGet httpGet = new HttpGet(uri);
 		Logger.appLog("[ StraightSwapiSearch ] The straight get is : "+httpGet); 
@@ -184,17 +206,19 @@ public class App {
 
 	//BUILDER
 	/**
-	 * 
+	 * This is the main request builder. Most requests come through this method.
+	 * The request utilizes a couple of parameters to pass into a switch statement.
 	 * @param getRequest - The request to build
 	 * @param command -  Switch command
-	 * @param type -  tYpe if applicable
+	 * @param type -  type if applicable
 	 * @return
 	 * @throws Exception
 	 */
 	public JsonObject personRequest(HttpGet getRequest, String command, String type) throws Exception {
 		Logger.appLog("PUNCH IT CHEWIE! : "+getRequest + " " + command + " " + type);
-		System.out.println("\nParsing Midi-chlorians, This may take a second...\n");
-
+		if(App.disable_midis == false) {
+			System.out.println("\nParsing Midi-chlorians, This may take a second...\n");
+		}
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		getRequest.addHeader("accept", "application/json");
 
@@ -210,8 +234,6 @@ public class App {
 					+ response.getStatusLine().getStatusCode() );
 
 		}
-
-
 
 		reader = new BufferedReader(
 				new InputStreamReader((response.getEntity().getContent())));
@@ -233,7 +255,7 @@ public class App {
 			is_an_array = true;
 		}
 		else {
-			System.out.println("Doesn't contain an Array of Results\n");
+			Logger.appLog("Doesn't contain an Array of Results\n");
 			is_an_array = false;
 		}
 
@@ -246,7 +268,7 @@ public class App {
 			else if (is_an_array == false) {
 				displaySingle(jsonObject);
 			}
-			
+
 			break;
 		case "displayplanets":
 			displayPlanets(arr);
@@ -259,6 +281,7 @@ public class App {
 			displayVehicles(arr);
 			break;
 
+			//The ping switch is used to send a request out just to get the count element
 		case "ping":
 			JsonElement count = jsonObject.get("count");
 			Logger.appLog("COUNT IS : "+count);
@@ -272,12 +295,14 @@ public class App {
 			break;
 
 		case "counted_request":
-			System.err.println("New Request is now : "+next_page);
+			Logger.appLog("New Request is now : "+next_page);
 			//Main.menuactions.console.twoChoices();
 			String getty = getRequest.getURI().toString();
-			System.out.println("Getty is : "+getty);
+			Logger.appLog("Getty is : "+getty);
+
 			while(allow_next != false) {
-				System.err.println("Next page is : "+next_page);
+
+				Logger.appLog("Next page is : "+next_page);
 				getRequest = new HttpGet(next_page);
 				Logger.appLog("Actual get is : "+getRequest);
 
@@ -287,7 +312,7 @@ public class App {
 				try{
 					s = nextcount.getAsString();
 					next_page = s;
-					System.out.println("S IS : "+s);
+					Logger.appLog("S IS : "+s);
 					HttpGet newReq = new HttpGet(next_page);
 					Main.menuactions.app.personRequest(newReq, "counted_request", null);
 				}
@@ -295,7 +320,7 @@ public class App {
 					Logger.appLog("Bounced out of while as no Json left : "+e.getLocalizedMessage());
 					allow_next = false;
 				}
-				
+
 			}
 			break;
 		case "swapi_response":
@@ -344,7 +369,10 @@ public class App {
 
 
 
-
+	/**
+	 * Pass in an array of a character to save the results in the person arraylist.
+	 * @param arr
+	 */
 	public void displayAll(JsonArray arr) {
 
 		if(arr.size() != 0) {
@@ -407,18 +435,24 @@ public class App {
 	}
 
 	/**
-	 * duplicationCheck checks the person ArrayList to see if the person allready exists.
+	 * duplicationCheck checks the person ArrayList to see if the person all ready exists.
 	 * If the person exists the data is pulled from the ArrayList to save sending repeated
 	 * requests. If the person doesn't exist they are searched for normally.
+	 * 
+	 * I created this method to try and reduce the ammounts of request being sent out
+	 * as the SWapi API throttles the response speed for your IP address after so many
+	 * requests.
+	 * 
 	 * @param p - The person to check
 	 * @param result - The JSON result
 	 */
 	private void duplicationCheck(Person p , JsonObject result) {
 		Logger.appLog("[Display All Duplication Check]");
 
+		//Check if the person is in the Array before adding them again
 		for(Person pp: People) {
 			if(pp.getName().equals(p.getName())) {
-				System.out.println("Not a new Character");
+				Logger.appLog("Not a new Character");
 				Logger.appLog(("SNAP! : "+p.getName()));
 				new_char = false;
 				pp.personPrint(advanced_print);
@@ -428,7 +462,7 @@ public class App {
 
 		if(new_char == true) {
 
-			System.out.println("New Character Detected\n");
+			Logger.appLog("New Character Detected\n");
 			JsonArray species = result.getAsJsonArray("species");
 			JsonArray films = result.getAsJsonArray("films");
 			JsonArray vehicles = result.getAsJsonArray("vehicles");
@@ -459,6 +493,12 @@ public class App {
 		}
 	}
 
+	/**
+	 * Used to display the planets information.
+	 * json array gets parsed.
+	 * Planets are then added into the planet arraylist
+	 * @param arr
+	 */
 	public void displayPlanets(JsonArray arr) {
 
 		if(arr.size() != 0) {
@@ -521,9 +561,12 @@ public class App {
 		}
 	}
 
-
+	/**
+	 * 
+	 * @param arr
+	 */
 	public void displayShips(JsonArray arr) {
-		System.err.println("VEHICLES ARRAY IS : "+arr.toString());
+		Logger.appLog("Ships ARRAY IS : "+arr.toString());
 		if(arr.size() != 0) {
 			Logger.appLog("Total Search Results per page : "+arr.size()+"\n");
 		}
@@ -589,10 +632,10 @@ public class App {
 
 		}
 	}
-	
-	
+
+
 	public void displayVehicles(JsonArray arr) {
-		
+
 		if(arr.size() != 0) {
 			Logger.appLog("Total Search Results per page : "+arr.size()+"\n");
 		}
@@ -616,7 +659,7 @@ public class App {
 
 			Vehicles vehicle = new Vehicles();
 			JsonObject result = arr.get(i).getAsJsonObject();
-			Logger.appLog("Spaceship Array is : "+arr.toString());
+			Logger.appLog("Vehicle Array is : "+arr.toString());
 			String name = arr.get(i).getAsJsonObject().get("name").getAsString();
 			String model = arr.get(i).getAsJsonObject().get("model").getAsString();
 			String manufacturer = arr.get(i).getAsJsonObject().get("manufacturer").getAsString();
