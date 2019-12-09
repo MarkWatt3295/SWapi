@@ -7,13 +7,19 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import gui.GuiController;
 
+
+/**
+ * A class used to build threads in my application.
+ * 
+ * @author Mark
+ *
+ */
 public class Thread {
 
 
@@ -47,6 +53,12 @@ public class Thread {
 		this.task1next = task1next;
 	}
 
+	/**
+	 * Currently there is only one thread that runs.
+	 * This thread logs its run time, and when it will next run.
+	 * The thread is constantly checking if the app is able to connect to a webpage.
+	 * If it can then the connection is available.
+	 */
 	public void runTask1() {
 
 		Runnable runnable = new Runnable() {
@@ -68,7 +80,7 @@ public class Thread {
 					} catch (IOException e) {
 						System.err.println("Unable to save Thread Log. Is the location missing?");
 						System.err.println("Attempting to recreate Directory....");
-						Main.menuactions.app.createDir();
+						App.createDir();
 					}
 				}
 				
@@ -79,7 +91,7 @@ public class Thread {
 				}
 
 				try {
-					URL url = new URL("http://www.google.com");
+					URL url = new URL("http://www.google.com"); //Using google as SWapi limits requests
 					URLConnection connection = url.openConnection();
 					connection.connect();
 					App.networkConnected = true;

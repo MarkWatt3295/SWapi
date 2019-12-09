@@ -3,7 +3,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -112,6 +111,7 @@ public class App {
 
 		switch (command) {
 
+		//Search for a person by name
 		case "search_by_name":
 			httpGet = new HttpGet("https://swapi.co/api/people/?search=" + searchquery);
 
@@ -123,6 +123,7 @@ public class App {
 			}
 			break;
 
+			//Search for a person with a number
 		case "search_by_number":
 			httpGet = new HttpGet("https://swapi.co/api/people/" + searchnumber);
 			try {
@@ -133,6 +134,7 @@ public class App {
 			}
 			break;
 
+			//Used to get the count item, to know how many characters are in SWapi 
 		case "ping":
 			httpGet = new HttpGet("https://swapi.co/api/people");
 			try {
@@ -142,6 +144,8 @@ public class App {
 				e.printStackTrace();
 			}
 			break;
+
+			//Used to search for a planet
 		case "planet_search":
 			httpGet = new HttpGet("https://swapi.co/api/planets/?search=" + searchquery);
 			try {
@@ -150,8 +154,10 @@ public class App {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
 			break;
 
+			//Search for a spaceship
 		case "ship_search":
 			httpGet = new HttpGet("https://swapi.co/api/starships/?search=" + searchquery);
 			try {
@@ -162,6 +168,7 @@ public class App {
 			}
 			break;
 
+			//Search for a vehicle
 		case "vehicle_search":
 			httpGet = new HttpGet("https://swapi.co/api/vehicles/?search=" + searchquery);
 			try {
@@ -208,10 +215,11 @@ public class App {
 	/**
 	 * This is the main request builder. Most requests come through this method.
 	 * The request utilizes a couple of parameters to pass into a switch statement.
+	 * This method builds the Http Get and specifies which printfunction should be used.
 	 * @param getRequest - The request to build
 	 * @param command -  Switch command
 	 * @param type -  type if applicable
-	 * @return
+	 * @return - The Json Object built
 	 * @throws Exception
 	 */
 	public JsonObject personRequest(HttpGet getRequest, String command, String type) throws Exception {
@@ -222,17 +230,18 @@ public class App {
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		getRequest.addHeader("accept", "application/json");
 
+		/**
+		 * The response given from the built request
+		 */
 		HttpResponse response = httpClient.execute(getRequest);
 
 		Logger.appLog("[personRequestGet : "+getRequest+"\n");
 
-
+		//If the status code is anything other than 200 there is a problem.
 		if (response.getStatusLine().getStatusCode() != 200) {
-
 			errorCode(response);
 			throw new RuntimeException("Failed : HTTP error code : "
 					+ response.getStatusLine().getStatusCode() );
-
 		}
 
 		reader = new BufferedReader(
@@ -261,6 +270,7 @@ public class App {
 
 
 		switch (command) {
+		//Print arrays as single or all
 		case "display":
 			if(is_an_array == true) {
 				displayAll(arr);
@@ -268,12 +278,14 @@ public class App {
 			else if (is_an_array == false) {
 				displaySingle(jsonObject);
 			}
-
 			break;
+
+			//Print the planets array
 		case "displayplanets":
 			displayPlanets(arr);
 			break;
 
+			//Print the spaceships array
 		case "displayships":
 			displayShips(arr);
 			break;
@@ -294,6 +306,8 @@ public class App {
 			}
 			break;
 
+			//Counted request loops a print that keeps returning
+			//the next page. The loop is broken when there is no pages left.
 		case "counted_request":
 			Logger.appLog("New Request is now : "+next_page);
 			//Main.menuactions.console.twoChoices();
@@ -323,6 +337,8 @@ public class App {
 
 			}
 			break;
+
+			//If the response contains this type then store it.
 		case "swapi_response":
 			if(type == "species") {
 				String name =  jsonObject.get("name").getAsString();
@@ -371,6 +387,8 @@ public class App {
 
 	/**
 	 * Pass in an array of a character to save the results in the person arraylist.
+	 * The array is then printed. GUI checks are done to enable messages to be 
+	 * displayed if the user is using a GUI instead of the console.
 	 * @param arr
 	 */
 	public void displayAll(JsonArray arr) {
@@ -378,6 +396,8 @@ public class App {
 		if(arr.size() != 0) {
 			Logger.appLog("Total Search Results per page : "+arr.size()+"\n");
 		}
+
+		//If the array is 0 then there are no results
 		if(arr.size() == 0) {
 			System.out.println("\n==================================================================================");
 			System.out.println("Mmm... No results are there. Try again you will.");
@@ -387,6 +407,7 @@ public class App {
 			}
 		}
 
+		//Display a message to let the user know there are multiple results
 		if(arr.size() > 1) {
 			System.err.println("There are multiple results for this search.\n");
 			if(App.using_gui == true) {
@@ -403,6 +424,8 @@ public class App {
 
 			//System.out.println("Array is : "+arr.toString());
 
+
+			//Parse Json and store results in strings
 			name = arr.get(i).getAsJsonObject().get("name").getAsString();
 			gender = arr.get(i).getAsJsonObject().get("gender").getAsString();
 			height = arr.get(i).getAsJsonObject().get("height").getAsString();
@@ -413,7 +436,7 @@ public class App {
 			birth_year = arr.get(i).getAsJsonObject().get("birth_year").getAsString();
 			home_world = arr.get(i).getAsJsonObject().get("homeworld").getAsString();
 
-
+			//Save results in a person object
 			p.setName(name);
 			p.setGender(gender);
 			p.setHeight(height);
@@ -423,13 +446,13 @@ public class App {
 			p.setEye_color(eye_color);
 			p.setBirthYear(birth_year);
 
-
+			//Network check
 			if(App.networkConnected == false){  
 				System.err.println("ERRRRRRRROOOOOORRRR"); 
 				App.networkError();
 				break;
 			}
-
+			//Run a duplication check
 			duplicationCheck(p, result);
 		}
 	}
@@ -442,6 +465,8 @@ public class App {
 	 * I created this method to try and reduce the ammounts of request being sent out
 	 * as the SWapi API throttles the response speed for your IP address after so many
 	 * requests.
+	 * 
+	 * Currently only runs on Characters
 	 * 
 	 * @param p - The person to check
 	 * @param result - The JSON result
@@ -460,6 +485,7 @@ public class App {
 			}
 		}
 
+		//If new_char is true, The user must be a new character.
 		if(new_char == true) {
 
 			Logger.appLog("New Character Detected\n");
@@ -527,6 +553,7 @@ public class App {
 
 			Logger.appLog("Planets Array is : "+arr.toString());
 
+			//Pares json and store results in strings
 			String name = arr.get(i).getAsJsonObject().get("name").getAsString();
 			String rotationPeriod = arr.get(i).getAsJsonObject().get("rotation_period").getAsString();
 			String orbitalPeriod = arr.get(i).getAsJsonObject().get("orbital_period").getAsString();
@@ -536,8 +563,8 @@ public class App {
 			String terrain = arr.get(i).getAsJsonObject().get("terrain").getAsString();
 			String surfaceWater = arr.get(i).getAsJsonObject().get("surface_water").getAsString();
 			String population = arr.get(i).getAsJsonObject().get("population").getAsString();
-			System.out.println("Name is "+name);
 
+			//Store strungs in Planets object
 			p.setName(name);
 			p.setRotationPeriod(rotationPeriod);
 			p.setOrbitalPeriod(orbitalPeriod);
@@ -548,9 +575,11 @@ public class App {
 			p.setSurfaceWater(surfaceWater);
 			p.setPopulation(population);
 
+			//Add to planets arraylist and print
 			Planets.add(p);
 			p.planetsPrint();
 
+			//Network check
 			if(App.networkConnected == false){  
 				System.err.println("ERRRRRRRROOOOOORRRR"); 
 				App.networkError();
@@ -562,8 +591,8 @@ public class App {
 	}
 
 	/**
-	 * 
-	 * @param arr
+	 * Pass in a Spaceship array, parse json and print
+	 * @param arr - A Spaceship array to check
 	 */
 	public void displayShips(JsonArray arr) {
 		Logger.appLog("Ships ARRAY IS : "+arr.toString());
@@ -588,6 +617,7 @@ public class App {
 
 		for (int i = 0; i < arr.size(); i++) {	
 
+			//Create spaceship object and parse json
 			Spaceship ship = new Spaceship();
 			JsonObject result = arr.get(i).getAsJsonObject();
 			Logger.appLog("Spaceship Array is : "+arr.toString());
@@ -605,6 +635,7 @@ public class App {
 			String mglt = arr.get(i).getAsJsonObject().get("MGLT").getAsString();
 			String starship_class = arr.get(i).getAsJsonObject().get("starship_class").getAsString();
 
+			//Store strings in a spaceship object
 			ship.setName(name);
 			ship.setModel(model);
 			ship.setManufacturer(manufacturer);
@@ -619,10 +650,11 @@ public class App {
 			ship.setMglt(mglt);
 			ship.setStarship_class(starship_class);
 
-
+			//Add to spaceship arraylist and print
 			Spaceship.add(ship);
 			ship.planetsPrint();
 
+			//Network check
 			if(App.networkConnected == false){  
 				System.err.println("ERRRRRRRROOOOOORRRR"); 
 				App.networkError();
@@ -634,6 +666,10 @@ public class App {
 	}
 
 
+	/**
+	 * Pass in vehicles array list, parse json and print
+	 * @param arr
+	 */
 	public void displayVehicles(JsonArray arr) {
 
 		if(arr.size() != 0) {
@@ -656,7 +692,7 @@ public class App {
 		}
 
 		for (int i = 0; i < arr.size(); i++) {	
-
+			//Create vehicles object, parse json and store results in strings
 			Vehicles vehicle = new Vehicles();
 			JsonObject result = arr.get(i).getAsJsonObject();
 			Logger.appLog("Vehicle Array is : "+arr.toString());
@@ -672,6 +708,7 @@ public class App {
 			String consumables = arr.get(i).getAsJsonObject().get("consumables").getAsString();
 			String vehicle_class = arr.get(i).getAsJsonObject().get("vehicle_class").getAsString();
 
+			//Save the strings in the vehicle object
 			vehicle.setName(name);
 			vehicle.setModel(model);
 			vehicle.setManufacturer(manufacturer);
@@ -684,6 +721,7 @@ public class App {
 			vehicle.setConsumables(consumables);
 			vehicle.setVehicle_class(vehicle_class);
 
+			//Add the vehicle to vehicle arraylist and print
 			Vehicles.add(vehicle);
 			vehicle.vehiclePrint();
 			if(App.networkConnected == false){  
@@ -696,18 +734,15 @@ public class App {
 		}
 	}
 
-
-
-
 	/**
-	 * Call the Print for a single passed user. This is used when there isn't a results array
+	 * Call the Print for a single passed character. This is used when there isn't a results array.
+	 * The object is then parsed and the character is printed.
 	 * @param job - A json object
 	 */
 	public void displaySingle(JsonObject job) {
 
 
 		Person p = new Person();
-		Films f = new Films();
 
 		name = job.getAsJsonObject().get("name").getAsString();
 		gender = job.getAsJsonObject().get("gender").getAsString();
@@ -730,9 +765,10 @@ public class App {
 		p.setBirthYear(birth_year);
 
 
-
+		//Duplication check to see if person is known
 		duplicationCheck(p, job);
 
+		//Network check
 		if(App.networkConnected == false){  
 			System.err.println("ERRRRRRRROOOOOORRRR"); 
 			App.networkError();
@@ -744,7 +780,12 @@ public class App {
 
 
 
-
+	/**
+	 * Take Json and seserialize it using google gson.
+	 * The json is then turned into a json object that Java can interact with
+	 * @param json - Json to turn into an object
+	 * @return
+	 */
 	public JsonObject deserialize(String json) {
 		Gson gson = new Gson();
 		JsonObject jsonClass = gson.fromJson(json, JsonObject.class);
@@ -754,6 +795,8 @@ public class App {
 
 	/**
 	 * The sub call is used to run a secondary search on uri's passed in.
+	 * E.g. when a character array is passed it may also contain an array of
+	 * film uris.
 	 * @param entity
 	 * @param jsonArray
 	 */
@@ -777,7 +820,7 @@ public class App {
 					try {
 						swapiSearch(uri, "species");
 					} catch (Exception e) {
-
+						System.out.println("Failed on swapi species search");
 						e.printStackTrace();
 					}
 
@@ -788,7 +831,7 @@ public class App {
 					try {
 						swapiSearch(uri, "films");
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
+						System.out.println("Failed on swapi film search");
 						e.printStackTrace();
 					}
 				}
@@ -799,7 +842,7 @@ public class App {
 					try {
 						swapiSearch(uri, "vehicles");
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
+						System.out.println("Failed on swapi vehicle search");
 						e.printStackTrace();
 					}
 				}
@@ -811,6 +854,11 @@ public class App {
 
 	}
 
+	/**
+	 * On startup try and delete the old logs.
+	 * Logs are deleted to create fresh ones for the new run.
+	 * Errors will be thrown and caught if the logs cant be accessed
+	 */
 	public static void clearLogs() {
 		try {
 			Runtime.getRuntime().exec("cmd /c del Swapi\\SWapi_Log.txt");
@@ -825,6 +873,10 @@ public class App {
 		}
 	}
 
+	
+	/**
+	 * If the network connection cant be found then display a message to the user (Console and Gui).
+	 */
 	public static void networkError() {
 		if(App.using_gui == false) {
 			System.out.println("=====================================================================================================");
@@ -838,7 +890,9 @@ public class App {
 				System.out.println("\n=====================================================================================================");
 				System.out.println("\nRetrying...\n");
 				System.out.println("=====================================================================================================");
-				Main.main(null);
+				//Main.main(null);
+				GuiController.networkCheck();
+				Main.menuactions.console.printGuiChoice();
 			}
 			else if(reply.equals("n") || reply.equals("N")) {
 
@@ -890,6 +944,9 @@ public class App {
 		}
 	}
 
+	/**
+	 * Create the SWapi folder and config.txt
+	 */
 	public static void createDir() {
 		File file = new File("SWapi\\config.txt");
 		file.getParentFile().mkdir(); 
@@ -901,6 +958,13 @@ public class App {
 		}
 	}
 
+	/**
+	 * Use the random function to get a random number between 2 passed values
+	 * e.g. between 1 and 100
+	 * @param min 
+	 * @param max
+	 * @return - a random number between the two values.
+	 */
 	public static int getRandomNumberInRange(int min, int max) {
 
 		if (min >= max) {
@@ -920,7 +984,8 @@ public class App {
 	}
 
 	/**
-	 * A starwars related http error catch
+	 * A starwars related http error catch.
+	 * Prints or displays an error message in console and GUI.
 	 * @param response
 	 */
 	private void errorCode(HttpResponse response) {

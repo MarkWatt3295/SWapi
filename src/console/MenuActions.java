@@ -21,7 +21,10 @@ public class MenuActions {
 	public ConsolePrint console = new ConsolePrint();
 
 
-
+	/**
+	 * Used to control what type of printout will be displayed to the user.
+	 * @param command (1 is basic , 2 is advanced)
+	 */
 	public void dataChooser(int command) {
 
 		switch (command) {
@@ -37,6 +40,10 @@ public class MenuActions {
 		}
 	}
 
+	/**
+	 * Set what type of table will displayed based on user choice.
+	 * @param command (1 - basic, 2 is advanced)
+	 */
 	public void advancedTableChoice(int command) {
 
 		switch (command) {
@@ -52,6 +59,10 @@ public class MenuActions {
 		}
 	}
 
+	/**
+	 * Set which GUI will be presented to the user.
+	 * @param command (1 - console , 2 - gui)
+	 */
 	public void guiChooser(int command) {
 		switch (command) {
 		case 1:
@@ -213,6 +224,10 @@ public class MenuActions {
 		}
 	}
 
+	/**
+	 * Set which advanced menu option should be called based on user input
+	 * @param command
+	 */
 	public void advancedMenuChoice(int command) {
 
 		switch (command) {
@@ -377,6 +392,7 @@ public class MenuActions {
 				+ "- Edit and ammend data (to fix spellings and capitalisations in swapi data).\n"
 				+ "- GUI debug tools\n"
 				+ "- Scaleable GUI\n"
+				+ "- Some kind of visual loading bar to show user something is happening in GUI\n"
 				+ "- Wookie Encoding\n\n"
 				+ "- [BUG] - Ctrl + Z kills Scanner read in Console app\n"
 				+ "- [BUG] - Random character search fails to display on certain numbers\n"
@@ -450,7 +466,11 @@ public class MenuActions {
 		}
 
 	}
-
+	
+	/**
+	 * Method just to quit the app safely. 
+	 * Prints exiting app on console.
+	 */
 	private void exitApp() {
 		System.out.println("Exiting App");
 		System.exit(0);

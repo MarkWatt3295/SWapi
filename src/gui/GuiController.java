@@ -31,7 +31,12 @@ import javax.swing.JToggleButton;
 import console.*;
 
 
-
+/**
+ * This class manages all GUI items (buttons, panels etc).
+ * The controls for these items are all set in here (styles, actions, listeners etc).
+ * @author Mark
+ *
+ */
 public class GuiController {
 
 	public ButtonGroup seach_panel_buttons;
@@ -54,7 +59,10 @@ public class GuiController {
 
 	public MenuActions menuactions = new MenuActions();
 
-
+	/**
+	 * Set a buttons specific draw properties
+	 * @param button
+	 */
 	public void buttonDefaults(JButton button) {
 		button.setOpaque(false);
 		button.setForeground(Color.ORANGE);
@@ -122,7 +130,10 @@ public class GuiController {
 
 
 	}
-
+	/**
+	 * Repaint a button using set options
+	 * @param button
+	 */
 	public void buttonRepaint(JButton button) {
 		button.setOpaque(false);
 		button.setForeground(Color.ORANGE);
@@ -214,6 +225,10 @@ public class GuiController {
 
 
 	//CONTROLS AND LISTENERS FOR NORMAL SP BUTTONS
+	/**
+	 * Create search panel button listeners (Hover and exit events)
+	 * @param button
+	 */
 	public void spButtonListener(JButton button) {
 
 
@@ -231,7 +246,7 @@ public class GuiController {
 	}
 
 	/**
-	 * Toggle button ACTION listeners
+	 * Search Panel Toggle button ACTION listeners
 	 * @param button
 	 */
 	public void searchPanelButtonController(JToggleButton button) {
@@ -259,6 +274,11 @@ public class GuiController {
 		});
 	}
 
+	/**
+	 * Display a confirmation dialog box to the suer.
+	 * This dialog box has a message and two options. Each option is 
+	 * clickable and calls an action.
+	 */
 	private void randomConfirmation() {
 		Object[] options = {"Yes Please!", "Maybe Later"};
 
@@ -301,7 +321,11 @@ public class GuiController {
 	}
 
 
-
+	/**
+	 * SearchPanel button action Listener. Use this to add action listeners to buttons.
+	 * A button is then checked in a switch statement to see what it should do.
+	 * @param button
+	 */
 	public void spButtonActions(JButton button) {
 		button.addActionListener(new ActionListener() {
 
@@ -433,6 +457,9 @@ public class GuiController {
 
 			}
 
+			/**
+			 * Clear the search fiels and strings after a search.
+			 */
 			private void searchClear() {
 				fullprint = "";
 				searchCommand = "";
@@ -448,6 +475,14 @@ public class GuiController {
 
 		});
 	}
+
+	/**
+	 * This method will allow the user to save text from a st string to a location.
+	 * This is used to save the textArea to Outputs.txt
+	 * @param file - Location to save file to and name (\SWapi\Output.txt)
+	 * @param text - the set text you want to save
+	 * @throws IOException
+	 */
 	public void writeStringToFile(File file, String text) throws IOException {
 		if (file == null)
 			throw new IllegalArgumentException("file cannot be null");
@@ -632,12 +667,17 @@ public class GuiController {
 		defaultToggleButton(panel_settings.btn_threads, new Color(100, 149, 237));
 		settingsPanelButtonListener(panel_settings.btn_folder, panel_settings.btn_debug);
 		settingsPanelButtonListener(panel_settings.btn_theme, panel_settings.btn_threads);
-		
+
 	}
-	
-	
+
+
 
 	//Listen to the settings panel buttons
+	/**
+	 * Add action listeners and mouse listeners to settings panel buttons and toggle buttons
+	 * @param button
+	 * @param togbutton
+	 */
 	public void settingsPanelButtonListener(JButton button, JToggleButton togbutton) {
 		button.addMouseListener(new MouseAdapter() {
 			@Override
@@ -672,45 +712,53 @@ public class GuiController {
 	}
 
 	//Panel Export
-	
-		public void createExportPanel() {
-			buttonDraw(panel_export.btnCsv, Color.WHITE, new Color(112, 128, 144), 20);
-			buttonDraw(panel_export.btnExportAsJson, Color.WHITE, new Color(244, 164, 96), 20);
-			buttonDraw(panel_export.btnExportAsTxt, Color.WHITE, new Color(143, 188, 143), 20);
-			buttonDraw(panel_export.btnSerialize, Color.WHITE, new Color(100, 149, 237), 20);
-			buttonDraw(panel_export.btnImport, Color.WHITE, new Color(51, 153, 153), 20);
-			exportPanelButtonListener(panel_export.btnCsv);
-			exportPanelButtonListener(panel_export.btnExportAsJson);
-			exportPanelButtonListener(panel_export.btnExportAsTxt);
-			exportPanelButtonListener(panel_export.btnImport);
-			exportPanelButtonListener(panel_export.btnSerialize);
-			
-		}
-		
-		//EXPORT PANEL button listeners
-		public void exportPanelButtonListener(JButton button) {
-			button.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseEntered(MouseEvent e) {
-					button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-				}
-			});
 
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					
+	public void createExportPanel() {
+		buttonDraw(panel_export.btnCsv, Color.WHITE, new Color(112, 128, 144), 20);
+		buttonDraw(panel_export.btnExportAsJson, Color.WHITE, new Color(244, 164, 96), 20);
+		buttonDraw(panel_export.btnExportAsTxt, Color.WHITE, new Color(143, 188, 143), 20);
+		buttonDraw(panel_export.btnSerialize, Color.WHITE, new Color(100, 149, 237), 20);
+		buttonDraw(panel_export.btnImport, Color.WHITE, new Color(51, 153, 153), 20);
+		exportPanelButtonListener(panel_export.btnCsv);
+		exportPanelButtonListener(panel_export.btnExportAsJson);
+		exportPanelButtonListener(panel_export.btnExportAsTxt);
+		exportPanelButtonListener(panel_export.btnImport);
+		exportPanelButtonListener(panel_export.btnSerialize);
+
+	}
+
+	//EXPORT PANEL button listeners
+	/**
+	 * Create mouselisteneres for export panel butons
+	 * @param button
+	 */
+	public void exportPanelButtonListener(JButton button) {
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+		});
+
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
 				mDialog("stormtrooper.png", "None of the buttons on this page have been implemented yet."
 						+ "\nThe idea was to have a way to export and import data.\n"
 						+ "The data could also be serialized and reloaded the next time the app\n"
 						+ "runs.", "Not Implemented Yet");
-					
-				}
-			});
 
-			
-		}
-	
-	
+			}
+		});
+
+
+	}
+
+	/**
+	 * Set the default options for a toggle button its background colour
+	 * @param button
+	 * @param back - The background colour (e.g Color.Red)
+	 */
 	public void defaultToggleButton(JToggleButton button, Color back) {
 		button.setBackground(back);
 		button.setFont(new Font("Segoe UI Black", Font.PLAIN, 20));
@@ -726,6 +774,10 @@ public class GuiController {
 	}
 
 	//CONTROLS AND LISTENERS FOR DP BUTTONS
+	/**
+	 * Add mouselisteners for display panel.
+	 * @param button
+	 */
 	public void dpButtonListener(JButton button) {
 
 		button.addMouseListener(new MouseAdapter() {
@@ -741,7 +793,10 @@ public class GuiController {
 		});
 	}
 
-
+	/**
+	 * Add action listeners for display panel
+	 * @param button
+	 */
 	public void dpButtonActions(JButton button) {
 		button.addActionListener(new ActionListener() {
 
@@ -776,7 +831,11 @@ public class GuiController {
 	}
 
 
-
+	/**
+	 * Method to run a couple of checks on startup.
+	 * Check the Apps directory has been made (location for log files and outputs)
+	 * Check the app has a connection
+	 */
 	public static void StartUpCheck() {
 
 		App.createDir();
@@ -796,6 +855,11 @@ public class GuiController {
 		}
 	}
 
+	/**
+	 * Create the imgURL to be used by the JFrame.
+	 * This allows me to load an icon for the frame.
+	 * @return
+	 */
 	public static Image getFrameImage() {
 		java.net.URL imgURL = AppWindow.class.getResource("/Resources/img/yoda.png");
 		if (imgURL != null) {
@@ -805,7 +869,9 @@ public class GuiController {
 		}
 	}
 
-
+	/**
+	 * Try and make a connection with SWapi. If it can be reached the connection should be okay.
+	 */
 	public static void networkCheck() {
 
 
@@ -840,6 +906,10 @@ public class GuiController {
 				JOptionPane.ERROR_MESSAGE);
 	}
 
+	/**
+	 * A dialog box to display a message to the user (Yoda themed)
+	 * @param message - message you want to display.
+	 */
 	public static void yodaDialog(String message) {
 		ImageIcon icon = createImageIcon("/Resources/img/yoda.png");
 		JOptionPane.showMessageDialog(AppWindow.frame,

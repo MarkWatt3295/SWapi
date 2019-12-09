@@ -1,7 +1,11 @@
 package console;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * Define everything a Vehicle object should have.
+ * Variables are accessed using getters and setters
+ * @author Mark
+ *
+ */
 public class Vehicles {
 
 	private String name;
@@ -87,6 +91,9 @@ public class Vehicles {
 	}
 
 
+	/**
+	 * A console print to display vehicle information
+	 */
 	public void vehiclePrint() {
 		System.out.println("----------------------------------------------");
 		System.out.println("  V E H I C L E   I N F O R M A T I O N");

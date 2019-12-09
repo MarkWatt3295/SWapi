@@ -2,8 +2,14 @@ package console;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.annotations.SerializedName;
-
+/**
+ * Define everything a Person object should have.
+ * Getters and setters used to access strings and arraylists.
+ * 
+ * Person also contains a print function to display formatted text within a person object
+ * @author Mark
+ *
+ */
 public class Person {
 
 	private String all_films = ""; //Initialise empty to avoid null being added
@@ -49,6 +55,11 @@ public class Person {
 		}
 	}
 
+	/**
+	 * A formated print to display the contents of a person object.
+	 * This method can print basic, advanced and to gui
+	 * @param advanced - set if you want advanced print
+	 */
 	public void personPrint(boolean advanced) {
 		
 		if(App.using_gui == false) {

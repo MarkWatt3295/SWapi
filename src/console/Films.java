@@ -1,10 +1,15 @@
 package console;
 
+/**
+ * This class contains everything that a Film object should have.
+ * Getters and setters are used to access the film strings.
+ * @author Mark
+ *
+ */
 public class Films {
 
     private String title;
 
-  
     private String episodeId;
     private String openingCrawl;
 

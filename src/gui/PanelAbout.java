@@ -3,13 +3,22 @@ package gui;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 import java.awt.Color;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
+
+/**
+ * Create the basic About Panel.
+ * 
+ * This panel has been made as a separate class purely for visual reasons. 
+ * I used a tool that would allow me to preview panels but it only worked if panels had there own classes.
+ * 
+ * @author Mark
+ *
+ */
 public class PanelAbout extends JPanel {
 
 	public JTextArea textArea = new JTextArea();
@@ -33,7 +42,7 @@ public class PanelAbout extends JPanel {
 		panel.add(lblAboutSwapiJava);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(25, 99, 834, 535);
+		scrollPane.setBounds(10, 99, 861, 535);
 		panel.add(scrollPane);
 		scrollPane.setViewportView(textArea);
 		textArea.setFont(new Font("Monospaced", Font.PLAIN, 16));

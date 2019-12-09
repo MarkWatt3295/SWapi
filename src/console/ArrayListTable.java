@@ -3,8 +3,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class is used to create a table from arraylists manually.
+ * This lists can be used to print Character data.
+ * @author Mark
+ *
+ */
 public class ArrayListTable {
 
+	//Each list is a row in the table
 	public  List<String> row0 = new ArrayList<>();
 	public  List<String> row1 = new ArrayList<>();
 	public  List<String> row2 = new ArrayList<>();
@@ -18,6 +25,10 @@ public class ArrayListTable {
 	
 	private static List<List<String>> table;
 
+	/**
+	 * Build a basic table (Only prints name, gender and species)
+	 * @param spacing - the gap between items
+	 */
 	public void buildTable(int spacing) {
 		row0.add(0,"Number");
 		row1.add(0,"Name");
@@ -28,6 +39,11 @@ public class ArrayListTable {
 		printTable(spacing);
 	}
 	
+	/**
+	 * Build a more advanced table displaying name, gender, 
+	 * species, height, mass, hair color, eye color, skin color and the characters birth year.
+	 * @param spacing - The gap between table items
+	 */
 	public void buildAdvancedTable(int spacing) {
 		row0.add(0,"Number");
 		row1.add(0,"Name");
@@ -44,6 +60,11 @@ public class ArrayListTable {
 		printTable(spacing);
 	}
 
+	/**
+	 * Loop through the table array (which contains all other stored arraylists).
+	 * This is then printed.
+	 * @param spacing
+	 */
 	private static void printTable(int spacing) {
 		List<Integer> maxLengths = findMaxLengths();
 
@@ -62,6 +83,9 @@ public class ArrayListTable {
 		System.out.println(sb);
 	}
 
+	/*
+	 * Used to calculate the string lengths in arrays to apply the right spacing
+	 */
 	private static List<Integer> findMaxLengths() {
 		List<Integer> maxLengths = new ArrayList<>();
 		for (List<String> row : table) {

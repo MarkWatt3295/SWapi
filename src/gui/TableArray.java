@@ -8,16 +8,19 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
-import console.Main;
 import console.Person;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 
-
+/** 
+ * This class creates a seperate JFrame which holds a table.
+ * The table contains information on all of the people that have been searched in the GUI.
+ * @author Mark
+ *
+ */
 public class TableArray {
 
 	public static JDialog dialog = new JDialog(AppWindow.frame,
@@ -27,7 +30,7 @@ public class TableArray {
 	/**
 	 * @wbp.parser.entryPoint
 	 */
-	public static void createWindow(List<Person> people) {
+	public static void createWindow(List<Person> people) { //CREATE the dialog window
 
 
 

@@ -1,5 +1,14 @@
 package console;
 
+/**
+ * Define everything a planet object should have
+ * Planets are used to create individual planet objects
+ * 
+ * Getters and setters are used to access its variables.
+ * Planet also contains a print to display planet information in a formatted console print.
+ * @author Mark
+ *
+ */
 public class Planets {
 
 	private String name;
@@ -87,6 +96,9 @@ public class Planets {
 		this.surfaceWater = surfaceWater;
 	}
 
+	/**
+	 * Print all planet information in a formatted console print.
+	 */
 	public void planetsPrint() {
 		System.out.println("----------------------------------------------");
 		System.out.println("  P L A N E T S   I N F O R M A T I O N");

@@ -1,5 +1,11 @@
 package console;
 
+/**
+ * Define everything a Spaceship object should have.
+ * Strings are accessed using getters and setters
+ * @author Mark
+ *
+ */
 public class Spaceship {
 
 	private String name;
@@ -95,6 +101,9 @@ public class Spaceship {
 		this.starship_class = starship_class;
 	}
 
+	/**
+	 * Print a formatted console print using planet object information
+	 */
 	public void planetsPrint() {
 		System.out.println("----------------------------------------------");
 		System.out.println("  S P A C E S H I P   I N F O R M A T I O N");

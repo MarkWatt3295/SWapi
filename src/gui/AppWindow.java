@@ -15,6 +15,12 @@ import java.awt.Image;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 
+/**
+ * This class creates the initial JFrame that is used to display the app.
+ * The frame settings and default frame items are set in this class.
+ * @author Mark
+ *
+ */
 public class AppWindow extends JFrame {
 
 
@@ -82,15 +88,15 @@ public class AppWindow extends JFrame {
 		panel_main.add(controller.panel_dashboard);
 		panel_side.setLayout(new GridLayout(0, 1, 0, 0));
 		sidePanelSetup();
-		
-		
+
+
 		//START BUILDING REST OF GUI
 		controller.createSearchPanel();
 		controller.createDisplayPanel();
 		controller.createAboutPanel();
 		controller.createSettingsPanel();
 		controller.createExportPanel();
-		
+
 
 	}
 
@@ -99,7 +105,10 @@ public class AppWindow extends JFrame {
 
 
 
-
+	/**
+	 * Construct the side panel that is displayed in the app.
+	 * 
+	 */
 	public void sidePanelSetup() {
 
 		controller.buttonDefaults(btn_about);
@@ -143,13 +152,13 @@ public class AppWindow extends JFrame {
 	}
 
 	//Returns an Image or null.
-		public static Image getFrameImage() {
-			java.net.URL imgURL = AppWindow.class.getResource("/Resources/img/yoda.png");
-			if (imgURL != null) {
-				return new ImageIcon(imgURL).getImage();
-			} else {
-				return null;
-			}
+	public static Image getFrameImage() {
+		java.net.URL imgURL = AppWindow.class.getResource("/Resources/img/yoda.png");
+		if (imgURL != null) {
+			return new ImageIcon(imgURL).getImage();
+		} else {
+			return null;
 		}
+	}
 
 }

@@ -2,10 +2,17 @@ package gui;
 
 import javax.swing.JPanel;
 import java.awt.GridLayout;
-import java.awt.Color;
 import javax.swing.JButton;
 import java.awt.SystemColor;
 
+/**
+ * Create he basic Display Panel
+ * This panel has been made as a separate class purely for visual reasons. 
+ * I used a tool that would allow me to preview panels but it only worked if panels had there own classes.
+ * 
+ * @author Mark
+ *
+ */
 public class PanelDisplay extends JPanel {
 	
 	public JButton btn_table = new JButton("Display Popout Basic Table");

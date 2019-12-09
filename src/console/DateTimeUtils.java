@@ -4,12 +4,15 @@ package console;
 import java.util.Date;
 
 /**
- * This Class was taken from a previous program of mine.
+ * This Class was taken from my M.U.A project.
+ * I intended to use it to track times taken for searches to be made and to
+ * log run times of SWapi sessions. It is a utility class for getting dates and times
  * 
  * @author Mark
  *
  */
 public class DateTimeUtils {
+	
     private static final long ONE_HOUR_IN_MS = 3600000;
     private static final long ONE_MIN_IN_MS = 60000;
     private static final long ONE_SEC_IN_MS = 1000;

@@ -3,12 +3,20 @@ package gui;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 import java.awt.Color;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 
+/**
+ * Create the basic Dashboard panel
+ * 
+ * This panel has been made as a separate class purely for visual reasons. 
+ * I used a tool that would allow me to preview panels but it only worked if panels had there own classes.
+ * 
+ * @author Mark
+ *
+ */
 public class PanelDashboard extends JPanel {
 
 	/**

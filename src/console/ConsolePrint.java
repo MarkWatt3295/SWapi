@@ -4,20 +4,28 @@ import java.util.Scanner;
 
 import org.apache.http.client.methods.HttpGet;
 
+/**
+ * This class is responsible for showing the user outputs from the console.
+ * The console takes information from the user and passes it into {@link MenuActions}
+ * @author Mark
+ *
+ */
 public class ConsolePrint {
 
 	private boolean displayheader = true;
 
-
-
-
-
+	/**
+	 * Draw the main menu that the user is presented with.
+	 * The user is presented with a menu and they then enter an integer to 
+	 * confirm a menu choice.
+	 */
 	public void menuDraw(){
 		if(displayheader == false) {
 			MenuActions.clrscr();
 
 		}
-
+		
+		//If the connection is okay carry on
 		if(App.networkConnected == true) {
 
 			if(displayheader == true) {
@@ -73,9 +81,13 @@ public class ConsolePrint {
 
 	}
 
+	/**
+	 * Print the Gui choice.
+	 * The user can then choose to start the app with a console interface or a GUI.
+	 */
 	public void printGuiChoice(){
 		if(Main.menuactions.app.initialised == false) {
-			Main.menuactions.app.initialiseApp();
+			App.initialiseApp();
 			Main.menuactions.app.initialised = true;
 		}
 		MenuActions.clrscr();
@@ -103,7 +115,9 @@ public class ConsolePrint {
 		}
 
 	}
-
+	/**
+	 * using {@link ArrayListTable} create a print a table with basic information from an Arraylist
+	 */
 	public void arraylistTable() {
 
 		System.out.println("-----------------------------------------------------------------------------");
@@ -122,6 +136,9 @@ public class ConsolePrint {
 
 	}
 
+	/**
+	 * using {@link ArrayListTable} create a print Advanced table from an Arraylist
+	 */
 	public void advancedArraylistTable() {
 
 		System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------");
@@ -146,7 +163,11 @@ public class ConsolePrint {
 	}
 
 
-
+	/**
+	 * Print advanced menu.
+	 * This menu allows the user to access advanced options.
+	 * (Clear arraylist, disable logs, stop threads)
+	 */
 	public void advancedMenuDraw(){
 		MenuActions.clrscr();
 		if(App.networkConnected == true) {
@@ -205,6 +226,12 @@ public class ConsolePrint {
 
 	}
 
+	/**
+	 * Ask the user if they want to continue with a search.
+	 * This method is called when the user trys to print all characters
+	 * as a confirmation.
+	 * @param get
+	 */
 	public void continueSearch(HttpGet get) {
 
 		if(App.character_count > 0 ) {
@@ -215,8 +242,9 @@ public class ConsolePrint {
 			System.out.println("\n==================================================================================\n");
 			Scanner yes_no = new Scanner(System.in);
 			String answer = yes_no.nextLine();
+			
+			//If yes started the counted request. This request will loop through people pages
 			if(answer.equals("y") || answer.equals("Y")) {
-
 				try {
 					Main.menuactions.app.personRequest(get, "counted_request", null);
 				} catch (Exception e) {
@@ -224,9 +252,11 @@ public class ConsolePrint {
 					e.printStackTrace();
 				}
 			}
+			//If no return to the main menu
 			else if(answer.equals("n") || answer.equals("N")) {
 				Main.menuactions.console.menuDraw();
 			}
+			//Anything else is invalid so ask the user again what they want to do
 			else {
 				System.out.println("Invalid response ");
 				continueSearch(get);

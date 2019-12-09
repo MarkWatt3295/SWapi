@@ -1,5 +1,13 @@
 package console;
 
+/**
+ * Print out ascii art to the console.
+ * I created the ascii art using a free ascii art generator
+ * The generator can be found at : https://www.asciiart.eu/movies/star-wars
+ * 
+ * @author Mark
+ *
+ */
 public class AsciiArt {
 	
 	
@@ -49,6 +57,7 @@ public class AsciiArt {
 				"                .                                   .            .");
 	}
 	
+	//Unused
 	public static void asciiDraw4() {
 		System.out.println("                       .-.\r\n" + 
 				"                      |_:_|\r\n" + 
